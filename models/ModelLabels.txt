@@ -1,0 +1,26 @@
+Polarization: Full polarised beams
+Structure: Energy Flavour CS_eLpR AFB_eLpR CS_eRpL AFB_eRpL
+
+SMA: Standar Model using the couplings and weak mixing angle from A-Models' paper [1].
+SMB: Standar Model using the couplings and weak mixing angle from B-Models' paper [2] and [3].
+B1: Model B in [2].
+B2: Model BL in [2].
+B3: Model BH in [2].
+B4: Model B+ in [2].
+B5: Model B- in [2].
+A1: First Model in [1] (Theta_H=0.115).
+A2: Second Model in [1] (Theta_H=0.0917) -> Named A1 in out paper.
+A3: Third Model in [1] (Theta_H=0.0737) -> Named A2 in our paper.
+
+Am: A- model in [3] -> Named B1- in our paper.
+Ap: A+ model in	[3] -> Named B1+ in our	paper.
+Bm: B- model in	[3] -> Named B2- in our	paper.
+Bp: B+ model in	[3] -> Named B2+ in our	paper.
+Cm: C- model in	[3] -> Named B3- in our	paper.
+Cp: C+ model in	[3] -> Named B3+ in our	paper.
+
+Reminder: Models B1-5 are fluctuations around the B1- model!
+
+[1] arXiv:1705.05282v3 [hep-ph] 5 Oct 2017.
+[2] arXiv:2006.02157v3 [hep-ph] 27 Jun 2020.
+[3] arXiv:2301.07833 [hep-ph] 5 Apr 2023
