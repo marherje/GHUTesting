@@ -1,6 +1,6 @@
 // # Copyright 2023  Adrián Irles (IFIC)
 #include "../include/experimentalUnc.h"
-#include "../include/analysis_prob.h"
+#include "../include/analysis_prob_ecfa.h"
 #include "../style/Style.C"
 #include "../style/Labels.C"
 
@@ -519,7 +519,7 @@ void test_ecfa(TString errortype, TString PID)
   QQBARLabel2(0.7435,0.10, " +1000*",kBlack,0.16);
   
   c_SM_comparison->cd();
-  TPad *padL = new TPad("padL", "padL", 0., 0.25, 0.85, 0.95);
+  TPad *padL = new TPad("padL", "padL", 0., 0.25, 0.85, 0.99);
   padL->SetTopMargin(0.1);
   padL->SetBottomMargin(0.05);
   padL->SetLeftMargin(0.065);
@@ -535,15 +535,14 @@ void test_ecfa(TString errortype, TString PID)
   DrawSepLine(0.507);
   DrawSepLine(0.728);
   DrawTopLine();
-  QQBARLabel3(0.095,0.925,"GHU vs SM discrimination power (#sigma-level)",kBlack,0.06);
-  //QQBARLabel3(0.095,0.98,"[Prospects for ParticleTransformer Flavor Tagging]",kBlue,0.03);
-  
-  c_SM_comparison->cd();
-  //QQBARLabel3(0.12,0.965,"[Prospects for ParticleTransformer Flavor Tagging]",kBlue,0.03);
-  QQBARLabel3(0.88,0.965,"["+PID+"]",kBlue,0.03);
-  //QQBARLabel3(0.85,0.92,"Work in progress",kRed,0.02);
-  
 
+  QQBARLabel3(0.095,0.925,"GHU vs SM discrimination power (#sigma-level)",kBlack,0.05);
+  //QQBARLabel3(0.095,0.98,"[Prospects for ParticleTransformer Flavor Tagging]",kBlue,0.03);
+  //QQBARLabel3(0.095,0.97,"[Current ILD but w/o PID capabilities]",kBlue,0.03);
+  //QQBARLabel3(0.095,0.97,"[Current ILD but exploiting dNdx for PID]",kBlue,0.03);
+  QQBARLabel3(0.095,0.97,"[Current ILD but exploiting ParticleTransformer algorithms]",kBlue,0.025);
+
+  c_SM_comparison->cd();
   TPad *padR = new TPad("padR", "padR", 0.82, 0.15, 1., 0.85);
   padR->SetTopMargin(0.1);
   padR->SetBottomMargin(0.1);
@@ -561,8 +560,9 @@ void test_ecfa(TString errortype, TString PID)
   //QQBARLabel(-0.015,0.8775,"",-1,0.65);
   
   c_SM_comparison->cd();
-  //QQBARLabel(0.845,0.9,"",-1,0.1);
-  
+  QQBARLabel(0.845,0.9,"",-1,0.1);
+  QQBARLabel3(0.85,0.88, "Work in progress",kRed,0.02);
+
   // Save everything:    
   TString savingformat[2]={".png",".eps"};
   for(int isave=0; isave<2 ;isave++){

@@ -126,8 +126,7 @@ std::vector<TH2F*> nsigmas_models(int quark_under_test, float energy_under_test,
             if(observables.at(jobs).energy!=energy_under_test ) continue;
 
             int iquark=observables.at(iobs).flav;
-            if(iquark==5) iquark=6;//index to read properly the uncertainties
-            int index_energy=0;
+	    int index_energy=0;
 	    if(observables.at(iobs).energy==91.2) index_energy=0;
 	    if(observables.at(iobs).energy==250) index_energy=1;
             if(observables.at(iobs).energy==350) index_energy=2;
@@ -137,40 +136,40 @@ std::vector<TH2F*> nsigmas_models(int quark_under_test, float energy_under_test,
 	    
             //----------
             // polarized Beams
-            float r_stat_L=sqrt(cross_SM_L/observables.at(jobs).Cross_L)*r_stat[index_energy][(iquark-4)]/100.; //renormalize of the stat. uncertainties to the cross section of the model
-            float r_stat_R=sqrt(cross_SM_R/observables.at(jobs).Cross_R)*r_stat[index_energy][(iquark-4)+1]/100.;
-	    float afb_stat_L=sqrt(cross_SM_L/observables.at(jobs).Cross_L)*afb_stat[index_energy][(iquark-4)]/100.;
-            float afb_stat_R=sqrt(cross_SM_R/observables.at(jobs).Cross_R)*afb_stat[index_energy][(iquark-4)+1]/100.;
-	    float afb_theo_L=sqrt(cross_SM_L/observables.at(jobs).Cross_L)*afb_theo_current[index_energy][(iquark-4)]/100.;
-            float afb_theo_R=sqrt(cross_SM_R/observables.at(jobs).Cross_R)*afb_theo_current[index_energy][(iquark-4)+1]/100.;
+            float r_stat_L=sqrt(cross_SM_L/observables.at(jobs).Cross_L)*r_stat[index_energy][2*iquark]/100.; //renormalize of the stat. uncertainties to the cross section of the model
+            float r_stat_R=sqrt(cross_SM_R/observables.at(jobs).Cross_R)*r_stat[index_energy][2*iquark+1]/100.;
+	    float afb_stat_L=sqrt(cross_SM_L/observables.at(jobs).Cross_L)*afb_stat[index_energy][2*iquark]/100.;
+            float afb_stat_R=sqrt(cross_SM_R/observables.at(jobs).Cross_R)*afb_stat[index_energy][2*iquark+1]/100.;
+	    float afb_theo_L=sqrt(cross_SM_L/observables.at(jobs).Cross_L)*afb_theo_current[index_energy][2*iquark]/100.;
+            float afb_theo_R=sqrt(cross_SM_R/observables.at(jobs).Cross_R)*afb_theo_current[index_energy][2*iquark+1]/100.;
 
 	    if(tpc_status=="noTPC"){
-	      afb_stat_L=sqrt(cross_SM_L/observables.at(jobs).Cross_L)*afb_stat_noTPC[index_energy][(iquark-4)]/100.;
-	      afb_stat_R=sqrt(cross_SM_R/observables.at(jobs).Cross_R)*afb_stat_noTPC[index_energy][(iquark-4+1)]/100.;
+	      afb_stat_L=sqrt(cross_SM_L/observables.at(jobs).Cross_L)*afb_stat_noTPC[index_energy][2*iquark]/100.;
+	      afb_stat_R=sqrt(cross_SM_R/observables.at(jobs).Cross_R)*afb_stat_noTPC[index_energy][2*iquark+1]/100.;
 	    }
 	    else if(tpc_status=="dEdx"){
-              afb_stat_L=sqrt(cross_SM_L/observables.at(jobs).Cross_L)*afb_stat_dEdx[index_energy][(iquark-4)]/100.;
-              afb_stat_R=sqrt(cross_SM_R/observables.at(jobs).Cross_R)*afb_stat_dEdx[index_energy][(iquark-4+1)]/100.;
+              afb_stat_L=sqrt(cross_SM_L/observables.at(jobs).Cross_L)*afb_stat_dEdx[index_energy][2*iquark]/100.;
+              afb_stat_R=sqrt(cross_SM_R/observables.at(jobs).Cross_R)*afb_stat_dEdx[index_energy][2*iquark+1]/100.;
             }
 	    else if(tpc_status=="dNdx"){
 	      //Temporalely changing the scaling
-              afb_stat_L=sqrt(cross_SM_L/observables.at(jobs).Cross_L)*afb_stat_dNdx[index_energy][(iquark-4)]/100.;
-              afb_stat_R=sqrt(cross_SM_R/observables.at(jobs).Cross_R)*afb_stat_dNdx[index_energy][(iquark-4+1)]/100.;
+              afb_stat_L=sqrt(cross_SM_L/observables.at(jobs).Cross_L)*afb_stat_dNdx[index_energy][2*iquark]/100.;
+              afb_stat_R=sqrt(cross_SM_R/observables.at(jobs).Cross_R)*afb_stat_dNdx[index_energy][2*iquark+1]/100.;
             }
 	    
 	    if(errortype=="StatTheoGigaZ"){
-	      afb_theo_L=sqrt(cross_SM_L/observables.at(jobs).Cross_L)*afb_theo_gigaZ[index_energy][(iquark-4)]/100.;
-	      afb_theo_R=sqrt(cross_SM_R/observables.at(jobs).Cross_R)*afb_theo_gigaZ[index_energy][(iquark-4)+1]/100.;
+	      afb_theo_L=sqrt(cross_SM_L/observables.at(jobs).Cross_L)*afb_theo_gigaZ[index_energy][2*iquark]/100.;
+	      afb_theo_R=sqrt(cross_SM_R/observables.at(jobs).Cross_R)*afb_theo_gigaZ[index_energy][2*iquark+1]/100.;
 	    }
 	    else if(errortype=="StatTheo250"){
-              afb_theo_L=sqrt(cross_SM_L/observables.at(jobs).Cross_L)*afb_theo_250[index_energy][(iquark-4)]/100.;
-              afb_theo_R=sqrt(cross_SM_R/observables.at(jobs).Cross_R)*afb_theo_250[index_energy][(iquark-4)+1]/100.;
+              afb_theo_L=sqrt(cross_SM_L/observables.at(jobs).Cross_L)*afb_theo_250[index_energy][2*iquark]/100.;
+              afb_theo_R=sqrt(cross_SM_R/observables.at(jobs).Cross_R)*afb_theo_250[index_energy][2*iquark+1]/100.;
             }
 
-	    float r_syst_L=r_syst[index_energy][(iquark-4)]/100.;
-            float r_syst_R=r_syst[index_energy][(iquark-4)+1]/100.;
-            float afb_syst_L=afb_syst[index_energy][(iquark-4)]/100.;
-            float afb_syst_R=afb_syst[index_energy][(iquark-4)+1]/100.;
+	    float r_syst_L=r_syst[index_energy][2*iquark]/100.;
+            float r_syst_R=r_syst[index_energy][2*iquark+1]/100.;
+            float afb_syst_L=afb_syst[index_energy][2*iquark]/100.;
+            float afb_syst_R=afb_syst[index_energy][2*iquark+1]/100.;
 
             //----------
             //we assume that the unpol syst unc is the same than lef handed
@@ -180,28 +179,28 @@ std::vector<TH2F*> nsigmas_models(int quark_under_test, float energy_under_test,
             // float lum_factor=4000./900.;
             // for 500GeV, the unpolarised make no sense since this energy is not reachable by FCC
 	    // note that the second index is for 350 GeV in reality
-	    int iquark_u=observables.at(iobs).flav;
-            float r_stat_unpolarised=r_stat_unpol[index_energy][(iquark_u-4)]/100.;
-            float afb_stat_unpolarised=afb_stat_unpol[index_energy][(iquark_u-4)]/100.;
-	    float r_syst_unpolarised=r_syst_unpol[index_energy][(iquark_u-4)]/100.;
-	    float afb_syst_unpolarised=afb_syst_unpol[index_energy][(iquark_u-4)]/100.;
-	    float afb_theo_unpolarised=afb_theo_unpol_current[index_energy][(iquark_u-4)]/100.;
+	    
+            float r_stat_unpolarised=r_stat_unpol[index_energy][iquark]/100.;
+            float afb_stat_unpolarised=afb_stat_unpol[index_energy][iquark]/100.;
+	    float r_syst_unpolarised=r_syst_unpol[index_energy][iquark]/100.;
+	    float afb_syst_unpolarised=afb_syst_unpol[index_energy][iquark]/100.;
+	    float afb_theo_unpolarised=afb_theo_unpol_current[index_energy][iquark]/100.;
 
 	    if(tpc_status=="noTPC"){
-              afb_stat_unpolarised=afb_stat_unpol_noTPC[index_energy][(iquark_u-4)]/100.;
+              afb_stat_unpolarised=afb_stat_unpol_noTPC[index_energy][iquark]/100.;
 	    }
 	    else if(tpc_status=="dEdx"){
-              afb_stat_unpolarised=afb_stat_unpol_dEdx[index_energy][(iquark_u-4)]/100.;
+              afb_stat_unpolarised=afb_stat_unpol_dEdx[index_energy][iquark]/100.;
             }
 	    else if(tpc_status=="dNdx"){
-              afb_stat_unpolarised=afb_stat_unpol_dNdx[index_energy][(iquark_u-4)]/100.;
+              afb_stat_unpolarised=afb_stat_unpol_dNdx[index_energy][iquark]/100.;
             }
 	    
 	    if(errortype=="StatTheoGigaZ"){
-	      afb_theo_unpolarised=afb_theo_unpol_gigaZ[index_energy][(iquark-4)]/100.;
+	      afb_theo_unpolarised=afb_theo_unpol_gigaZ[index_energy][iquark]/100.;
 	    } 
 	    else if(errortype=="StatTheo250"){
-              afb_theo_unpolarised=afb_theo_unpol_250[index_energy][(iquark-4)]/100.;
+              afb_theo_unpolarised=afb_theo_unpol_250[index_energy][iquark]/100.;
             }
 	    
 	    if(errortype=="Stat"){
@@ -237,8 +236,7 @@ std::vector<TH2F*> nsigmas_models(int quark_under_test, float energy_under_test,
               afb_stat_R=(sqrt(0.095)/0.5)*afb_stat_R;
 	      afb_stat_unpolarised=(sqrt(0.095)/0.5)*afb_stat_unpolarised;
 	    }
-	    // Note that now iquark==6 instead of 5 to read the b values!
-            if(iquark==6){
+            if(iquark==5){
               r_stat_L=(sqrt(0.381)/0.8)*r_stat_L;
               r_stat_R=(sqrt(0.381)/0.8)*r_stat_R;
               afb_stat_L=(sqrt(0.381)/0.8)*afb_stat_L;
