@@ -198,10 +198,10 @@ std::vector<TH2F*> nsigmas_models(int quark_under_test, float energy_under_test,
             }
 	    
 	    if(errortype=="StatTheoGigaZ"){
-	      afb_theo_unpolarised=afb_theo_unpol_gigaZ[index_energy][(iquark-4)]/100.;
+	      afb_theo_unpolarised=afb_theo_unpol_gigaZ[index_energy][(iquark_u-4)]/100.;
 	    } 
 	    else if(errortype=="StatTheo250"){
-              afb_theo_unpolarised=afb_theo_unpol_250[index_energy][(iquark-4)]/100.;
+              afb_theo_unpolarised=afb_theo_unpol_250[index_energy][(iquark_u-4)]/100.;
             }
 	    
 	    if(errortype=="Stat"){
