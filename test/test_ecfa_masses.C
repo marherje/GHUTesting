@@ -1,6 +1,6 @@
-// # Copyright 2023  Adrián Irles (IFIC)
+// # Copyright 2025 Jesus PEdro Marquez Hernandez (IFIC)
 #include "../include/experimentalUnc.h"
-#include "../include/analysis_prob_ecfa.h"
+#include "../include/analysis_prob.h"
 #include "../style/Style.C"
 #include "../style/Labels.C"
 
@@ -96,7 +96,7 @@ void Labels(double energy_under_test=250, TString errortype="Stat", TString tpc_
 
 void DrawLeg()
 {
-  TString colors_st[] = {"<1 #sigma","1-2 #sigma","< 3 #sigma","3-4 #sigma","4-5 #sigma","> 5 #sigma"}; // #colors >= #levels - 1                              
+  TString colors_st[] = {"<1 #kern[-0.8]{#sigma}","1-2 #kern[-0.8]{#sigma}","< 3 #kern[-0.8]{#sigma}","3-4 #kern[-0.8]{#sigma}","4-5 #kern[-0.8]{#sigma}","> 5 #kern[-0.8]{#sigma}"}; // #colors >= #levels - 1                              
   Int_t colors[]={kGreen+3,kGreen+3,kGreen+3,kTeal+4,kTeal+5,kTeal+6};
   
   gStyle->SetPalette(6,colors);
@@ -372,7 +372,7 @@ TH1F * histo_three_energies(std::vector<TH2F*> probhistos_c,std::vector<TH2F*> p
   return results;
 }
 
-void test_ecfa(TString errortype, TString PID)
+void test_ecfa_masses(TString errortype, TString PID)
 {
 
   //Read all models:
@@ -450,6 +450,7 @@ void test_ecfa(TString errortype, TString PID)
   SM_comparison->SetTitle("");
   SM_comparison->GetXaxis()->SetTickLength(0.);
   SM_comparison->GetYaxis()->SetTickLength(0.);
+  SM_comparison->GetYaxis()->SetLabelColor(kGray+2);
   SM_comparison->GetYaxis()->SetLabelSize(0.07);
   SM_comparison->GetXaxis()->SetLabelSize(0.06);
 
@@ -492,13 +493,52 @@ void test_ecfa(TString errortype, TString PID)
     }
   }
   
-  TCanvas *c_SM_comparison= new TCanvas ("SM_comparison","SM_comparison",800,800);
+  TCanvas *c_SM_comparison= new TCanvas ("SM_comparison","SM_comparison",900,800);
   c_SM_comparison->cd();
   gStyle->SetOptStat(0);
   gStyle->SetMarkerSize(2.);
 
+  //Left legend insertion START
+  TBox *box = new TBox(0.03, 0.3, 0.105, 0.88);
+  box->SetFillColor(kWhite);
+  box->SetFillStyle(1001);
+  box->SetLineColor(kBlack);
+  box->SetLineWidth(2);
+  box->Draw("l");
+
+  TBox *box_t = new TBox(0.025, 0.88, 0.11, 0.96);
+  box_t->SetFillColor(kWhite);
+  box_t->SetFillStyle(1001);
+  box_t->SetLineColor(kBlack);
+  box_t->SetLineWidth(2);
+  box_t->Draw("l");
+
+  TLatex latex;
+  latex.SetTextColor(kBlack);
+  latex.SetTextSize(0.032);
+  float firstmass = 0.835;
+  float stepmass = 0.0742;
+  float xmass = 0.042;
+  latex.DrawLatex(xmass, firstmass, "19.6");
+  latex.DrawLatex(xmass, firstmass-stepmass, "19.6");
+  latex.DrawLatex(xmass, firstmass-2*stepmass, "14.9");
+  latex.DrawLatex(xmass, firstmass-3*stepmass, "14.9");
+  latex.DrawLatex(xmass, firstmass-4*stepmass, "10.2");
+  latex.DrawLatex(xmass, firstmass-5*stepmass, "10.2");
+  latex.DrawLatex(xmass, firstmass-6*stepmass, " 8.5");
+  latex.DrawLatex(xmass, firstmass-7*stepmass, " 7.2");
+
+  TLatex latex_t;
+  latex_t.SetTextColor(kBlack);
+  latex_t.SetTextSize(0.033);
+  latex_t.DrawLatex(xmass+0.008, 0.932, "m_{Z^{1}}");
+  latex_t.DrawLatex(xmass-0.005, 0.892, "[TeV]");
+
+  c_SM_comparison->Update();
+  // Left legend insertion END
+
   c_SM_comparison->cd();
-  TPad *padB = new TPad("padB", "padB", 0., 0., 0.85, 0.3);
+  TPad *padB = new TPad("padB", "padB", 0.12, 0., 0.85, 0.3);
   padB->SetTopMargin(0.065);
   padB->SetBottomMargin(0);
   padB->Draw();
@@ -507,8 +547,6 @@ void test_ecfa(TString errortype, TString PID)
   DrawBracket(0.2905, 0.7);
   DrawBracket(0.511, 0.7);
   DrawBracket(0.7315, 0.7);
-  //DrawBracket(0.60, 0.45);
-  //DrawBracket(0.80, 0.45);
   QQBARLabel2(0.082,0.50, "ILC250^{#diamond}",kBlack,0.17);
   QQBARLabel2(0.082,0.30, "(no pol.)",kBlack,0.17);
   QQBARLabel2(0.3025,0.50, "ILC250",kBlack,0.17);
@@ -519,7 +557,7 @@ void test_ecfa(TString errortype, TString PID)
   QQBARLabel2(0.7435,0.10, " +1000*",kBlack,0.16);
   
   c_SM_comparison->cd();
-  TPad *padL = new TPad("padL", "padL", 0., 0.25, 0.85, 0.99);
+  TPad *padL = new TPad("padL", "padL", 0.12, 0.25, 0.85, 0.95);
   padL->SetTopMargin(0.1);
   padL->SetBottomMargin(0.05);
   padL->SetLeftMargin(0.065);
@@ -535,15 +573,12 @@ void test_ecfa(TString errortype, TString PID)
   DrawSepLine(0.507);
   DrawSepLine(0.728);
   DrawTopLine();
-
-
-  //padL->cd();
   
-  QQBARLabel3(0.09,0.925,"GHU vs SM discrimination power (#sigma-level)",kBlack,0.05);
-  //QQBARLabel3(0.095,0.98,"[Prospects for ParticleTransformer Flavor Tagging]",kBlue,0.03);
-  //QQBARLabel3(0.095,0.97,"[Current ILD but w/o PID capabilities]",kBlue,0.03);
-  //QQBARLabel3(0.095,0.97,"[Current ILD but exploiting dNdx for PID]",kBlue,0.03);
-  QQBARLabel3(0.09,0.97,"[Current ILD but exploiting ParticleTransformer algorithms]",kBlue,0.025);
+  c_SM_comparison->cd();
+  QQBARLabel3(0.18,0.9,"GHU vs SM discrimination power (#kern[-0.8]{#sigma}-level)",kBlack,0.0425);
+  QQBARLabel3(0.18,0.95,"[Current ILD but w/o PID capabilities]",kBlue,0.028);
+  //QQBARLabel3(0.18,0.95,"[Current ILD but exploiting dNdx for PID]",kBlue,0.028);
+  //QQBARLabel3(0.18,0.95,"[Current ILD but exploiting ParticleTransformer algorithms]",kBlue,0.028);
 
   c_SM_comparison->cd();
   TPad *padR = new TPad("padR", "padR", 0.82, 0.15, 1., 0.85);
@@ -564,11 +599,11 @@ void test_ecfa(TString errortype, TString PID)
   
   c_SM_comparison->cd();
   QQBARLabel(0.845,0.9,"",-1,0.1);
-  QQBARLabel3(0.85,0.88, "Work in progress",kRed,0.02);
+  //QQBARLabel3(0.85,0.88, "Work in progress",kRed,0.02);
 
   // Save everything:    
   TString savingformat[2]={".png",".eps"};
   for(int isave=0; isave<2 ;isave++){
-      c_SM_comparison->SaveAs("GHU_ecfa_p_"+errortype+"_"+PID+savingformat[isave]);
+      c_SM_comparison->SaveAs("GHU_ecfa_p_mZ1_"+errortype+"_"+PID+savingformat[isave]);
   }
 }

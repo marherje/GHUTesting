@@ -229,7 +229,7 @@ std::vector<TH2F*> nsigmas_models(int quark_under_test, float energy_under_test,
               afb_syst_unpolarised=0;
 	    }
 
-	    // ECFA prospects
+	    // ECFA ParT prospects
 	    if(iquark==4){
               r_stat_L=(sqrt(0.095)/0.5)*r_stat_L;
               r_stat_R=(sqrt(0.095)/0.5)*r_stat_R;
@@ -245,7 +245,7 @@ std::vector<TH2F*> nsigmas_models(int quark_under_test, float energy_under_test,
               afb_stat_R=(sqrt(0.381)/0.8)*afb_stat_R;
 	      afb_stat_unpolarised=(sqrt(0.381)/0.8)*afb_stat_unpolarised;
 	    }
-	
+      
 	    //Total errors:
 	    float r_total_L=sqrt(r_stat_L*r_stat_L+r_syst_L*r_syst_L);
             float r_total_R=sqrt(r_stat_R*r_stat_R+r_syst_R*r_syst_R);

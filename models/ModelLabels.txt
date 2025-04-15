@@ -24,5 +24,3 @@ Reminder: Models B1-5 are fluctuations around the B1- model!
 [1] arXiv:1705.05282v3 [hep-ph] 5 Oct 2017.
 [2] arXiv:2006.02157v3 [hep-ph] 27 Jun 2020.
 [3] arXiv:2301.07833 [hep-ph] 5 Apr 2023
-
-The models are in the [private] "https://github.com/marherje/Hosotani" repository in the folder "FinalModelsForHosotaniTest"

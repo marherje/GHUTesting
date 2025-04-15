@@ -1,6 +1,6 @@
 // # Copyright 2023  Adrián Irles (IFIC)
 #include "../include/experimentalUnc.h"
-#include "../include/analysis_prob_ecfa.h"
+#include "../include/analysis_prob.h"
 #include "../style/Style.C"
 #include "../style/Labels.C"
 
@@ -20,6 +20,8 @@ double Prob_To_Sigma(double prob)
   if(prob==0.0) sigma=50.;
   return sigma;
 }
+
+
 
 double Sigma_To_Prob(double sigma)
 {
@@ -193,7 +195,7 @@ void DrawTextBins(std::vector<double> xtodraw,std::vector<double> ytodraw,std::v
   }    
 }
 
-TH1F * histo_one_energy_unpol(std::vector<TH2F*> probhistos_c,std::vector<TH2F*> probhistos_b,double energy_under_test=250, TString errortype="Stat", TString tpc_status="default", TString particle="b")
+TH1F * histo_one_energy_unpol(std::vector<TH2F*> probhistos_c,std::vector<TH2F*> probhistos_b,double energy_under_test=250, TString errortype="Stat", TString tpc_status="default")
 {
   const Int_t xyNBINS = 8;
   Double_t xyedges[xyNBINS + 1] = {-0.5, 0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5};
@@ -222,10 +224,7 @@ TH1F * histo_one_energy_unpol(std::vector<TH2F*> probhistos_c,std::vector<TH2F*>
     nsigma2=probhistos_c.at(2)->GetBinContent(binx+1,biny+1);
     prob1=Sigma_To_Prob(nsigma1);
     prob2=Sigma_To_Prob(nsigma2);
-    
-    if(particle=="b") prob = prob1;
-    else if(particle=="c") prob = prob2;
-    else if(particle=="both") prob = prob1*prob2;
+    prob=prob1*prob2;
     nsigma=Prob_To_Sigma(prob);
 
     // Rounding for plots:
@@ -249,7 +248,7 @@ TH1F * histo_one_energy_unpol(std::vector<TH2F*> probhistos_c,std::vector<TH2F*>
 
 
 
-TH1F * histo_one_energy(std::vector<TH2F*> probhistos_c,std::vector<TH2F*> probhistos_b,double energy_under_test=250, TString errortype="Stat", TString tpc_status="default", TString particle="b")
+TH1F * histo_one_energy(std::vector<TH2F*> probhistos_c,std::vector<TH2F*> probhistos_b,double energy_under_test=250, TString errortype="Stat", TString tpc_status="default")
 
 {
 
@@ -264,15 +263,11 @@ TH1F * histo_one_energy(std::vector<TH2F*> probhistos_c,std::vector<TH2F*> probh
     biny=0;
     binx=j;
     double nsigma=0;
-    double prob=0;
     double prob1=Sigma_To_Prob(probhistos_b.at(0)->GetBinContent(binx+1,biny+1));
     double prob2=Sigma_To_Prob(probhistos_b.at(1)->GetBinContent(binx+1,biny+1));
     double prob3=Sigma_To_Prob(probhistos_c.at(0)->GetBinContent(binx+1,biny+1));
     double prob4=Sigma_To_Prob(probhistos_c.at(1)->GetBinContent(binx+1,biny+1));
-    
-    if(particle=="b") prob = prob1*prob2;
-    else if(particle=="c") prob = prob3*prob4;
-    else if(particle=="both") prob = prob1*prob2*prob3*prob4;
+    double prob=prob1*prob2*prob3*prob4;
     nsigma=Prob_To_Sigma(prob);
     
     //Rounding
@@ -287,7 +282,7 @@ TH1F * histo_one_energy(std::vector<TH2F*> probhistos_c,std::vector<TH2F*> probh
   return results; 
 }
 
-TH1F * histo_both_energies(std::vector<TH2F*> probhistos_c,std::vector<TH2F*> probhistos_c500,std::vector<TH2F*> probhistos_b,std::vector<TH2F*> probhistos_b500,TString errortype="Stat", TString tpc_status="default", TString particle="b")
+TH1F * histo_both_energies(std::vector<TH2F*> probhistos_c,std::vector<TH2F*> probhistos_c500,std::vector<TH2F*> probhistos_b,std::vector<TH2F*> probhistos_b500,TString errortype="Stat", TString tpc_status="default")
 {
     TString energyst="250&500_GeV";
 
@@ -301,7 +296,6 @@ TH1F * histo_both_energies(std::vector<TH2F*> probhistos_c,std::vector<TH2F*> pr
       biny=0;
       binx=j;
       double nsigma=0;	  
-      double prob=0;
       double prob1=Sigma_To_Prob(probhistos_b.at(0)->GetBinContent(binx+1,biny+1));
       double prob2=Sigma_To_Prob(probhistos_b500.at(0)->GetBinContent(binx+1,biny+1));
       double prob3=Sigma_To_Prob(probhistos_c.at(0)->GetBinContent(binx+1,biny+1));
@@ -310,9 +304,7 @@ TH1F * histo_both_energies(std::vector<TH2F*> probhistos_c,std::vector<TH2F*> pr
       double prob6=Sigma_To_Prob(probhistos_b500.at(1)->GetBinContent(binx+1,biny+1));
       double prob7=Sigma_To_Prob(probhistos_c.at(1)->GetBinContent(binx+1,biny+1));
       double prob8=Sigma_To_Prob(probhistos_c500.at(1)->GetBinContent(binx+1,biny+1));
-      if(particle=="b") prob = prob1*prob2*prob5*prob6;
-      else if(particle=="c") prob = prob3*prob4*prob7*prob8;
-      else if(particle=="both") prob = prob1*prob2*prob3*prob4*prob5*prob6*prob7*prob8;
+      double prob=prob1*prob2*prob3*prob4*prob5*prob6*prob7*prob8;
       nsigma=Prob_To_Sigma(prob);
       
       // Rounding for plots:                                                                                                 
@@ -328,7 +320,7 @@ TH1F * histo_both_energies(std::vector<TH2F*> probhistos_c,std::vector<TH2F*> pr
     return results;
 }
 
-TH1F * histo_three_energies(std::vector<TH2F*> probhistos_c,std::vector<TH2F*> probhistos_c500,std::vector<TH2F*> probhistos_c1000,std::vector<TH2F*> probhistos_b,std::vector<TH2F*> probhistos_b500,std::vector<TH2F*> probhistos_b1000,TString errortype="Stat", TString tpc_status="default", TString particle="b")
+TH1F * histo_three_energies(std::vector<TH2F*> probhistos_c,std::vector<TH2F*> probhistos_c500,std::vector<TH2F*> probhistos_c1000,std::vector<TH2F*> probhistos_b,std::vector<TH2F*> probhistos_b500,std::vector<TH2F*> probhistos_b1000,TString errortype="Stat", TString tpc_status="default")
 {
   TString energyst="250&500&1000 GeV";
 
@@ -341,7 +333,7 @@ TH1F * histo_three_energies(std::vector<TH2F*> probhistos_c,std::vector<TH2F*> p
     biny=0;
     binx=j;
     double nsigma=0;
-    double prob=0;
+    
     double prob1=Sigma_To_Prob(probhistos_b.at(0)->GetBinContent(binx+1,biny+1));
     double prob2=Sigma_To_Prob(probhistos_b500.at(0)->GetBinContent(binx+1,biny+1));
     double prob3=Sigma_To_Prob(probhistos_b1000.at(0)->GetBinContent(binx+1,biny+1));
@@ -354,9 +346,7 @@ TH1F * histo_three_energies(std::vector<TH2F*> probhistos_c,std::vector<TH2F*> p
     double prob1111=Sigma_To_Prob(probhistos_c.at(1)->GetBinContent(binx+1,biny+1));
     double prob2222=Sigma_To_Prob(probhistos_c500.at(1)->GetBinContent(binx+1,biny+1));
     double prob3333=Sigma_To_Prob(probhistos_c1000.at(1)->GetBinContent(binx+1,biny+1));
-    if(particle=="b") prob = prob1*prob2*prob3*prob111*prob222*prob333;
-    else if(particle=="c") prob = prob11*prob22*prob33*prob1111*prob2222*prob3333;
-    else if(particle=="both") prob = prob1*prob2*prob3*prob11*prob22*prob33*prob111*prob222*prob333*prob1111*prob2222*prob3333;
+    double prob=prob1*prob2*prob3*prob11*prob22*prob33*prob111*prob222*prob333*prob1111*prob2222*prob3333;
     nsigma=Prob_To_Sigma(prob);	
     
     // Rounding for plots:                       
@@ -372,41 +362,50 @@ TH1F * histo_three_energies(std::vector<TH2F*> probhistos_c,std::vector<TH2F*> p
   return results;
 }
 
-void test_ecfa(TString errortype, TString PID)
+void test_SM_masses()
 {
 
   //Read all models:
-  // changed dNdx to noTPC for the second comparison
   read_all_models(false);
   std::vector<observables_struct_t> observables=create_observables();
-  std::vector<TH2F*> probhistos_c_250_gigaZ=nsigmas_models(4,250, observables,errortype,PID);
-  std::vector<TH2F*> probhistos_b_250_gigaZ=nsigmas_models(5,250, observables,errortype,PID);
-  std::vector<TH2F*> probhistos_c_500_gigaZ=nsigmas_models(4,500, observables,errortype,PID);
-  std::vector<TH2F*> probhistos_b_500_gigaZ=nsigmas_models(5,500, observables,errortype,PID);
-  std::vector<TH2F*> probhistos_c_1000_gigaZ=nsigmas_models(4,1000, observables,errortype,PID);
-  std::vector<TH2F*> probhistos_b_1000_gigaZ=nsigmas_models(5,1000, observables,errortype,PID);
-
-
-  // Change all functions to match the quark or quarks
+  std::vector<TH2F*> probhistos_c_250_current=nsigmas_models(4,250, observables,"StatTheoCurrent","dNdx");
+  std::vector<TH2F*> probhistos_b_250_current=nsigmas_models(5,250, observables,"StatTheoCurrent","dNdx");
+  std::vector<TH2F*> probhistos_c_250_ilc250=nsigmas_models(4,250, observables,"StatTheo250","dNdx");
+  std::vector<TH2F*> probhistos_b_250_ilc250=nsigmas_models(5,250, observables,"StatTheo250","dNdx");
+  std::vector<TH2F*> probhistos_c_250_gigaZ=nsigmas_models(4,250, observables,"StatTheoGigaZ","dNdx");
+  std::vector<TH2F*> probhistos_b_250_gigaZ=nsigmas_models(5,250, observables,"StatTheoGigaZ","dNdx");
+  std::vector<TH2F*> probhistos_c_500_current=nsigmas_models(4,500, observables,"StatTheoCurrent","dNdx");
+  std::vector<TH2F*> probhistos_b_500_current=nsigmas_models(5,500, observables,"StatTheoCurrent","dNdx");
+  std::vector<TH2F*> probhistos_c_500_ilc250=nsigmas_models(4,500, observables,"StatTheo250","dNdx");
+  std::vector<TH2F*> probhistos_b_500_ilc250=nsigmas_models(5,500, observables,"StatTheo250","dNdx");
+  std::vector<TH2F*> probhistos_c_500_gigaZ=nsigmas_models(4,500, observables,"StatTheoGigaZ","dNdx");
+  std::vector<TH2F*> probhistos_b_500_gigaZ=nsigmas_models(5,500, observables,"StatTheoGigaZ","dNdx");
+  std::vector<TH2F*> probhistos_c_1000_current=nsigmas_models(4,1000, observables,"StatTheoCurrent","dNdx");
+  std::vector<TH2F*> probhistos_b_1000_current=nsigmas_models(5,1000, observables,"StatTheoCurrent","dNdx");
+  std::vector<TH2F*> probhistos_c_1000_ilc250=nsigmas_models(4,1000, observables,"StatTheo250","dNdx");
+  std::vector<TH2F*> probhistos_b_1000_ilc250=nsigmas_models(5,1000, observables,"StatTheo250","dNdx");
+  std::vector<TH2F*> probhistos_c_1000_gigaZ=nsigmas_models(4,1000, observables,"StatTheoGigaZ","dNdx");
+  std::vector<TH2F*> probhistos_b_1000_gigaZ=nsigmas_models(5,1000, observables,"StatTheoGigaZ","dNdx");
+  
   TH1F * results_250_unpol[3];
-  results_250_unpol[0]=histo_one_energy_unpol(probhistos_c_250_gigaZ,probhistos_b_250_gigaZ,250,errortype,PID,"b");
-  results_250_unpol[1]=histo_one_energy_unpol(probhistos_c_250_gigaZ,probhistos_b_250_gigaZ,250,errortype,PID,"c");
-  results_250_unpol[2]=histo_one_energy_unpol(probhistos_c_250_gigaZ,probhistos_b_250_gigaZ,250,errortype,PID,"both");
+  results_250_unpol[0]=histo_one_energy_unpol(probhistos_c_250_current,probhistos_b_250_current,250,"StatTheoCurrent","dNdx");
+  results_250_unpol[1]=histo_one_energy_unpol(probhistos_c_250_ilc250,probhistos_b_250_ilc250,250,"StatTheo250","dNdx");
+  results_250_unpol[2]=histo_one_energy_unpol(probhistos_c_250_gigaZ,probhistos_b_250_gigaZ,250,"StatTheoGigaZ","dNdx");
   
   TH1F * results_250[3];
-  results_250[0]=histo_one_energy(probhistos_c_250_gigaZ,probhistos_b_250_gigaZ,250,errortype,PID,"b");
-  results_250[1]=histo_one_energy(probhistos_c_250_gigaZ,probhistos_b_250_gigaZ,250,errortype,PID,"c");
-  results_250[2]=histo_one_energy(probhistos_c_250_gigaZ,probhistos_b_250_gigaZ,250,errortype,PID,"both");
+  results_250[0]=histo_one_energy(probhistos_c_250_current,probhistos_b_250_current,250,"StatTheoCurrent","dNdx");
+  results_250[1]=histo_one_energy(probhistos_c_250_ilc250,probhistos_b_250_ilc250,250,"StatTheo250","dNdx");
+  results_250[2]=histo_one_energy(probhistos_c_250_gigaZ,probhistos_b_250_gigaZ,250,"StatTheoGigaZ","dNdx");
   
   TH1F * results_both[3];
-  results_both[0]=histo_both_energies(probhistos_c_250_gigaZ,probhistos_c_500_gigaZ,probhistos_b_250_gigaZ,probhistos_b_500_gigaZ,errortype,PID,"b");
-  results_both[1]=histo_both_energies(probhistos_c_250_gigaZ,probhistos_c_500_gigaZ,probhistos_b_250_gigaZ,probhistos_b_500_gigaZ,errortype,PID,"c");
-  results_both[2]=histo_both_energies(probhistos_c_250_gigaZ,probhistos_c_500_gigaZ,probhistos_b_250_gigaZ,probhistos_b_500_gigaZ,errortype,PID,"both");
+  results_both[0]=histo_both_energies(probhistos_c_250_current,probhistos_c_500_current,probhistos_b_250_current,probhistos_b_500_current,"StatTheoCurrent","dNdx");
+  results_both[1]=histo_both_energies(probhistos_c_250_ilc250,probhistos_c_500_ilc250,probhistos_b_250_ilc250,probhistos_b_500_ilc250,"StatTheo250","dNdx");
+  results_both[2]=histo_both_energies(probhistos_c_250_gigaZ,probhistos_c_500_gigaZ,probhistos_b_250_gigaZ,probhistos_b_500_gigaZ,"StatTheoGigaZ","dNdx");
   
   TH1F * results_three[3];
-  results_three[0]=histo_three_energies(probhistos_c_250_gigaZ,probhistos_c_500_gigaZ,probhistos_c_1000_gigaZ,probhistos_b_250_gigaZ,probhistos_b_500_gigaZ,probhistos_b_1000_gigaZ,errortype,PID,"b");
-  results_three[1]=histo_three_energies(probhistos_c_250_gigaZ,probhistos_c_500_gigaZ,probhistos_c_1000_gigaZ,probhistos_b_250_gigaZ,probhistos_b_500_gigaZ,probhistos_b_1000_gigaZ,errortype,PID,"c");
-  results_three[2]=histo_three_energies(probhistos_c_250_gigaZ,probhistos_c_500_gigaZ,probhistos_c_1000_gigaZ,probhistos_b_250_gigaZ,probhistos_b_500_gigaZ,probhistos_b_1000_gigaZ,errortype,PID,"both");
+  results_three[0]=histo_three_energies(probhistos_c_250_current,probhistos_c_500_current,probhistos_c_1000_current,probhistos_b_250_current,probhistos_b_500_current,probhistos_b_1000_current,"StatTheoCurrent","dNdx");
+  results_three[1]=histo_three_energies(probhistos_c_250_ilc250,probhistos_c_500_ilc250,probhistos_c_1000_ilc250,probhistos_b_250_ilc250,probhistos_b_500_ilc250,probhistos_b_1000_ilc250,"StatTheo250","dNdx");
+  results_three[2]=histo_three_energies(probhistos_c_250_gigaZ,probhistos_c_500_gigaZ,probhistos_c_1000_gigaZ,probhistos_b_250_gigaZ,probhistos_b_500_gigaZ,probhistos_b_1000_gigaZ,"StatTheoGigaZ","dNdx");
   
   cout<<"sigma levels 250 unpol: "<<endl;
   for(int i=1;i<14;i++){
@@ -427,7 +426,7 @@ void test_ecfa(TString errortype, TString PID)
 
   //Preparing histos
   TString title_models[]={"SMB","A_{1}","A_{2}","B_{1}^{-}","B_{1}^{+}","B_{2}^{-}","B_{2}^{+}","B_{3}^{-}","B_{3}^{+}"};
-  TString title_flavor[]={"B","C","H","B","C","H","B","C","H","B","C","H"};
+  TString title_precision[]={"C","R","Z","C","R","Z","C","R","Z","C","R","Z"};
   
   Int_t colors[6]={kGreen+3,kGreen+3,kGreen+3,kTeal+4,kTeal+5,kTeal+6};
   gStyle->SetPalette((sizeof(colors)/sizeof(Int_t)), colors);
@@ -445,11 +444,12 @@ void test_ecfa(TString errortype, TString PID)
     SM_comparison->GetYaxis()->SetBinLabel(j+1,title_models[j+1]);
   }
   for(int j=0; j<12; j++) {
-    SM_comparison->GetXaxis()->SetBinLabel(j+1,title_flavor[j]);
+    SM_comparison->GetXaxis()->SetBinLabel(j+1,title_precision[j]);
   }
   SM_comparison->SetTitle("");
   SM_comparison->GetXaxis()->SetTickLength(0.);
   SM_comparison->GetYaxis()->SetTickLength(0.);
+  SM_comparison->GetYaxis()->SetLabelColor(kGray+2);
   SM_comparison->GetYaxis()->SetLabelSize(0.07);
   SM_comparison->GetXaxis()->SetLabelSize(0.06);
 
@@ -492,13 +492,53 @@ void test_ecfa(TString errortype, TString PID)
     }
   }
   
-  TCanvas *c_SM_comparison= new TCanvas ("SM_comparison","SM_comparison",800,800);
+  TCanvas *c_SM_comparison= new TCanvas ("SM_comparison","SM_comparison",900,800);
   c_SM_comparison->cd();
   gStyle->SetOptStat(0);
   gStyle->SetMarkerSize(2.);
 
+  // Left legend insertion START
+  TBox *box = new TBox(0.03, 0.3, 0.105, 0.88);
+  box->SetFillColor(kWhite);
+  box->SetFillStyle(1001);  
+  box->SetLineColor(kBlack);
+  box->SetLineWidth(2);     
+  box->Draw("l");           
+
+  TBox *box_t = new TBox(0.025, 0.88, 0.11, 0.96);
+  box_t->SetFillColor(kWhite);
+  box_t->SetFillStyle(1001);
+  box_t->SetLineColor(kBlack);
+  box_t->SetLineWidth(2);
+  box_t->Draw("l");
+  
+  TLatex latex;
+  latex.SetTextColor(kBlack);
+  latex.SetTextSize(0.032); 
+  float firstmass = 0.835;
+  float stepmass = 0.0742;
+  float xmass = 0.042;
+  latex.DrawLatex(xmass, firstmass, "19.6");
+  latex.DrawLatex(xmass, firstmass-stepmass, "19.6");
+  latex.DrawLatex(xmass, firstmass-2*stepmass, "14.9");
+  latex.DrawLatex(xmass, firstmass-3*stepmass, "14.9");
+  latex.DrawLatex(xmass, firstmass-4*stepmass, "10.2");
+  latex.DrawLatex(xmass, firstmass-5*stepmass, "10.2");
+  latex.DrawLatex(xmass, firstmass-6*stepmass, " 8.5");
+  latex.DrawLatex(xmass, firstmass-7*stepmass, " 7.2");
+
+  TLatex latex_t;
+  latex_t.SetTextColor(kBlack);
+  latex_t.SetTextSize(0.033);
+  latex_t.DrawLatex(xmass+0.008, 0.932, "m_{Z^{1}}");
+  latex_t.DrawLatex(xmass-0.005, 0.892, "[TeV]");
+    
+  c_SM_comparison->Update();
+  // Left legend insertion END
+  
+  
   c_SM_comparison->cd();
-  TPad *padB = new TPad("padB", "padB", 0., 0., 0.85, 0.3);
+  TPad *padB = new TPad("padB", "padB", 0.12, 0., 0.85, 0.3);
   padB->SetTopMargin(0.065);
   padB->SetBottomMargin(0);
   padB->Draw();
@@ -519,7 +559,7 @@ void test_ecfa(TString errortype, TString PID)
   QQBARLabel2(0.7435,0.10, " +1000*",kBlack,0.16);
   
   c_SM_comparison->cd();
-  TPad *padL = new TPad("padL", "padL", 0., 0.25, 0.85, 0.99);
+  TPad *padL = new TPad("padL", "padL", 0.12, 0.25, 0.85, 0.95);
   padL->SetTopMargin(0.1);
   padL->SetBottomMargin(0.05);
   padL->SetLeftMargin(0.065);
@@ -535,15 +575,7 @@ void test_ecfa(TString errortype, TString PID)
   DrawSepLine(0.507);
   DrawSepLine(0.728);
   DrawTopLine();
-
-
-  //padL->cd();
-  
-  QQBARLabel3(0.09,0.925,"GHU vs SM discrimination power (#sigma-level)",kBlack,0.05);
-  //QQBARLabel3(0.095,0.98,"[Prospects for ParticleTransformer Flavor Tagging]",kBlue,0.03);
-  //QQBARLabel3(0.095,0.97,"[Current ILD but w/o PID capabilities]",kBlue,0.03);
-  //QQBARLabel3(0.095,0.97,"[Current ILD but exploiting dNdx for PID]",kBlue,0.03);
-  QQBARLabel3(0.09,0.97,"[Current ILD but exploiting ParticleTransformer algorithms]",kBlue,0.025);
+  QQBARLabel3(0.084,0.925,"GHU vs SM discrimination power (#sigma-level)",kBlack,0.06);
 
   c_SM_comparison->cd();
   TPad *padR = new TPad("padR", "padR", 0.82, 0.15, 1., 0.85);
@@ -554,21 +586,22 @@ void test_ecfa(TString errortype, TString PID)
   padR->Draw();
   padR->cd();
   DrawLeg();
-  QQBARLabel3(0.05,0.91, "Quark flavor",kBlack,0.16);
-  QQBARLabel2(0.1,0.85, "#bullet B: b-quark",kBlack,0.16);
-  QQBARLabel2(0.1,0.81, "  ",kBlack,0.16);
-  QQBARLabel2(0.1,0.75, "#bullet C: c-quark ",kBlack,0.16);
-  QQBARLabel2(0.1,0.71, "  ",kBlack,0.16);
-  QQBARLabel2(0.1,0.65, "#bullet H: b & c ",kBlack,0.16);
+  QQBARLabel3(0.05,0.95, "Z-fermion",kBlack,0.17);
+  QQBARLabel3(0.05,0.91, " couplings",kBlack,0.17);
+  QQBARLabel2(0.1,0.85, "#bullet C: Current",kBlack,0.16);
+  QQBARLabel2(0.1,0.81, "   precision",kBlack,0.16);
+  QQBARLabel2(0.1,0.75, "#bullet R: ILC250 ",kBlack,0.16);
+  QQBARLabel2(0.1,0.71, "  (Rad. Ret.)",kBlack,0.16);
+  QQBARLabel2(0.1,0.65, "#bullet Z: Giga-Z ",kBlack,0.16);
   //QQBARLabel(-0.015,0.8775,"",-1,0.65);
   
   c_SM_comparison->cd();
   QQBARLabel(0.845,0.9,"",-1,0.1);
-  QQBARLabel3(0.85,0.88, "Work in progress",kRed,0.02);
+  
 
   // Save everything:    
   TString savingformat[2]={".png",".eps"};
   for(int isave=0; isave<2 ;isave++){
-      c_SM_comparison->SaveAs("GHU_ecfa_p_"+errortype+"_"+PID+savingformat[isave]);
+      c_SM_comparison->SaveAs("SM_comparison_mZ1"+savingformat[isave]);
   }
 }

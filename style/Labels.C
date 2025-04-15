@@ -48,6 +48,7 @@ void QQBARLabel2(Double_t x,Double_t y,TString text,Color_t color,Double_t texts
 void QQBARLabel3(Double_t x,Double_t y,TString text,Color_t color,Double_t textsize)
 {
 
+  text = text.Strip(TString::kBoth); // Remove leading and trailing spaces
   TLatex p;
   p.SetNDC();
   p.SetTextSize(textsize);
