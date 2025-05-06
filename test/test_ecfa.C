@@ -537,10 +537,10 @@ void test_ecfa(TString errortype, TString PID)
   DrawTopLine();
 
   QQBARLabel3(0.095,0.925,"GHU vs SM discrimination power (#sigma-level)",kBlack,0.05);
-  //QQBARLabel3(0.095,0.98,"[Prospects for ParticleTransformer Flavor Tagging]",kBlue,0.03);
+  QQBARLabel3(0.095,0.98,"[Prospects for ParticleTransformer Flavor Tagging]",kBlue,0.03);
   //QQBARLabel3(0.095,0.97,"[Current ILD but w/o PID capabilities]",kBlue,0.03);
   //QQBARLabel3(0.095,0.97,"[Current ILD but exploiting dNdx for PID]",kBlue,0.03);
-  QQBARLabel3(0.095,0.97,"[Current ILD but exploiting ParticleTransformer algorithms]",kBlue,0.025);
+  //QQBARLabel3(0.095,0.97,"[Current ILD but exploiting ParticleTransformer algorithms]",kBlue,0.025);
 
   c_SM_comparison->cd();
   TPad *padR = new TPad("padR", "padR", 0.82, 0.15, 1., 0.85);
