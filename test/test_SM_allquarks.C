@@ -203,7 +203,19 @@ auto combine_all_mcs = [](std::vector<observables_struct_t> observables, int mc_
   const Int_t xyNBINS = 8;
   Double_t xyedges[xyNBINS + 1] = {-0.5, 0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5};
   TString energyst = TString::Format("%.0f", energy);
-  TH1F* result = new TH1F("AFB_"+energyst+"_"+errortype+(unpol?"_unpol":""),"AFB_"+energyst+"_"+errortype,xyNBINS,xyedges);
+  TString histoname = "AFB_" + energyst + "_" + errortype + "_" + tpc_status;
+  histoname += (unpol ? "_unpol" : "");
+  histoname += TString::Format("_mc%d_%d", mc_first, mc_last);
+
+  TString histotitle = "AFB_" + energyst + "_" + errortype + "_" + tpc_status;
+  histotitle += (unpol ? " unpol" : "");
+  histotitle += TString::Format(" mc%d_%d", mc_first, mc_last);
+
+  TH1F* result = new TH1F(
+    histoname,
+    histotitle,
+    xyNBINS, xyedges
+  );
 
   for(int j=1; j<theory.size(); j++) {
       double prob = 1.0;
@@ -242,7 +254,21 @@ auto combine_two_energies = [](std::vector<observables_struct_t> observables, in
     }
     const Int_t xyNBINS = 8;
     Double_t xyedges[xyNBINS + 1] = {-0.5, 0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5};
-    TH1F* result = new TH1F("AFB_both_250_500_"+errortype,"AFB_both_250_500_"+errortype,xyNBINS,xyedges);
+    TString energyst1 = TString::Format("%.0f", energy1);
+    TString energyst2 = TString::Format("%.0f", energy2);
+    TString energyst = energyst1 + "_" + energyst2;
+
+    TString histoname = "AFB_both_" + energyst + "_" + errortype + "_" + tpc_status;
+    histoname += TString::Format("_mc%d_%d", mc_first, mc_last);
+
+    TString histotitle = "AFB_both_" + energyst + "_" + errortype + "_" + tpc_status;
+    histotitle += TString::Format(" mc%d_%d", mc_first, mc_last);
+
+    TH1F* result = new TH1F(
+      histoname,
+      histotitle,
+      xyNBINS, xyedges
+    );
 
     for(int j=1; j<theory.size(); j++) {
       double prob = 1.0;
@@ -279,7 +305,22 @@ auto combine_three_energies = [](std::vector<observables_struct_t> observables, 
     }
     const Int_t xyNBINS = 8;
     Double_t xyedges[xyNBINS + 1] = {-0.5, 0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5};
-    TH1F* result = new TH1F("AFB_three_250_500_1000_"+errortype,"AFB_three_250_500_1000_"+errortype,xyNBINS,xyedges);
+    TString energyst1 = TString::Format("%.0f", energy1);
+    TString energyst2 = TString::Format("%.0f", energy2);
+    TString energyst3 = TString::Format("%.0f", energy3);
+    TString energyst = energyst1 + "_" + energyst2 + "_" + energyst3;
+
+    TString histoname = "AFB_three_" + energyst + "_" + errortype + "_" + tpc_status;
+    histoname += TString::Format("_mc%d_%d", mc_first, mc_last);
+
+    TString histotitle = "AFB_three_" + energyst + "_" + errortype + "_" + tpc_status;
+    histotitle += TString::Format(" mc%d_%d", mc_first, mc_last);
+
+    TH1F* result = new TH1F(
+      histoname,
+      histotitle,
+      xyNBINS, xyedges
+    );
 
     for(int j=1; j<theory.size(); j++) {
       double prob = 1.0;
@@ -506,7 +547,7 @@ void test_SM_PID(int mc_first, int mc_last, TString errortype)
   std::vector<observables_struct_t> observables=create_observables();
 
   // Para 250 GeV
-  TH1F * results_250_unpol[9];
+  TH1F * results_250_unpol[3];
   results_250_unpol[0] = combine_all_mcs(observables, mc_first, mc_last, 250, errortype, "noTPC", true);
   results_250_unpol[1] = combine_all_mcs(observables, mc_first, mc_last, 250, errortype, "dEdx", true);
   results_250_unpol[2] = combine_all_mcs(observables, mc_first, mc_last, 250, errortype, "dNdx", true);
@@ -639,7 +680,7 @@ void test_SM_PID(int mc_first, int mc_last, TString errortype)
   QQBARLabel2(0.7435,0.50, "ILC250",kBlack,0.17);
   QQBARLabel2(0.7435,0.30, " +500",kBlack,0.16);
   QQBARLabel2(0.7435,0.10, " +1000*",kBlack,0.16);
-  
+
   c_SM_comparison->cd();
   TPad *padL = new TPad("padL", "padL", 0., 0.25, 0.85, 0.95);
   padL->SetTopMargin(0.1);
@@ -658,7 +699,7 @@ void test_SM_PID(int mc_first, int mc_last, TString errortype)
   DrawSepLine(0.728);
   DrawTopLine();
   QQBARLabel3(0.095,0.925,"GHU vs SM discrimination power (#sigma-level)",kBlack,0.06);
-
+  //QQBARLabel3(0.095,0.98,"[Prospects for b & c quark | + s quark with 1% #DeltaA_{FB} | statistical uncertainties only]",kBlue,0.03);
   c_SM_comparison->cd();
   TPad *padR = new TPad("padR", "padR", 0.82, 0.15, 1., 0.85);
   padR->SetTopMargin(0.1);
@@ -883,7 +924,7 @@ void test_ecfa(TString errortype, TString PID)
 
 void test_SM_allquarks(){
   //test_SM_precision(4,5);
-  test_SM_PID(4,6,"Stat");
+  test_SM_PID(3,6,"Stat");
 
   //test_ecfa("StatTheoGigaZ","ParT");
 
