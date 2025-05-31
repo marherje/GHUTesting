@@ -699,7 +699,7 @@ void test_SM_PID(int mc_first, int mc_last, TString errortype)
   DrawSepLine(0.728);
   DrawTopLine();
   QQBARLabel3(0.095,0.925,"GHU vs SM discrimination power (#sigma-level)",kBlack,0.06);
-  //QQBARLabel3(0.095,0.98,"[Prospects for b & c quark | + s quark with 1% #DeltaA_{FB} | statistical uncertainties only]",kBlue,0.03);
+  QQBARLabel3(0.095,0.98,"[Prospects for b & c quark | + t quark with 1% #DeltaA_{FB} | statistical uncertainties only]",kBlue,0.03);
   c_SM_comparison->cd();
   TPad *padR = new TPad("padR", "padR", 0.82, 0.15, 1., 0.85);
   padR->SetTopMargin(0.1);
