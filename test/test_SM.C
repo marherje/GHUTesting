@@ -35,7 +35,7 @@ double Sigma_To_Prob(double sigma)
 void Labels(double energy_under_test=250, TString errortype="Stat", TString tpc_status="default", TString SM_status="nominal", int iter=8, bool pol=true, TString style="proceedings")
 {
   TString energyst="250 GeV";
-  if(energy_under_test==91.2) energyst="Z-Pole";
+  if(energy_under_test==float(91.2)) energyst="Z-Pole";
   else if(energy_under_test==380) energyst="380 GeV";
   else if(energy_under_test==500) energyst="500 GeV";
   else if(energy_under_test==1000) energyst="1 TeV";
@@ -43,7 +43,7 @@ void Labels(double energy_under_test=250, TString errortype="Stat", TString tpc_
   else if(energy_under_test==10000) energyst="250&500&1000 GeV";
   
   TString energypaper="ILC250";
-  if(energy_under_test==91.2) energypaper="ILC Giga-Z";
+  if(energy_under_test==float(91.2)) energypaper="ILC Giga-Z";
   else if(energy_under_test==380) energypaper="380 GeV";
   else if(energy_under_test==500) energypaper="ILC500";
   else if(energy_under_test==1000) energypaper="ILC1000";
@@ -51,7 +51,7 @@ void Labels(double energy_under_test=250, TString errortype="Stat", TString tpc_
   else if(energy_under_test==10000) energypaper="ILC250+500+1000";
   
   float ILCpaper=0.6;
-  if(energy_under_test==91.2) ILCpaper=0.55;
+  if(energy_under_test==float(91.2)) ILCpaper=0.55;
   else if(energy_under_test==250) ILCpaper=0.65;
   else if(energy_under_test==380) ILCpaper=0.6;
   else if(energy_under_test==500) ILCpaper=0.65;
@@ -201,7 +201,7 @@ TH1F * histo_one_energy_unpol(std::vector<TH2F*> probhistos_c,std::vector<TH2F*>
   Double_t xyedges[xyNBINS + 1] = {-0.5, 0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5};
 
   TString energyst;
-  if(energy_under_test==91.2) energyst="Z-Pole";
+  if(energy_under_test==float(91.2)) energyst="Z-Pole";
   else if(energy_under_test==250) energyst="250";
   else if(energy_under_test==500) energyst="500";
   else if(energy_under_test==1000) energyst="1000";
@@ -408,21 +408,26 @@ void test_SM()
   results_three[2]=histo_three_energies(probhistos_c_250_gigaZ,probhistos_c_500_gigaZ,probhistos_c_1000_gigaZ,probhistos_b_250_gigaZ,probhistos_b_500_gigaZ,probhistos_b_1000_gigaZ,"StatTheoGigaZ","dNdx");
   
   cout<<"sigma levels 250 unpol: "<<endl;
-  for(int i=1;i<14;i++){
+  for(int i=1;i<8;i++){
     cout<<results_250_unpol[0]->GetBinContent(i)<<" , "<<results_250_unpol[1]->GetBinContent(i)<<" , "<<results_250_unpol[2]->GetBinContent(i)<<endl;
   }
+  cout<<endl;
   cout<<"sigma levels 250: "<<endl;
-  for(int i=1;i<14;i++){
+  for(int i=1;i<8;i++){
     cout<<results_250[0]->GetBinContent(i)<<" , "<<results_250[1]->GetBinContent(i)<<" , "<<results_250[2]->GetBinContent(i)<<endl;
   }
+  cout<<endl;
   cout<<"sigma levels both: "<<endl;
-  for(int i=1;i<14;i++){
+  for(int i=1;i<8;i++){
     cout<<results_both[0]->GetBinContent(i)<<" , "<<results_both[1]->GetBinContent(i)<<" , "<<results_both[2]->GetBinContent(i)<<endl;
   }
+  cout<<endl;
   cout<<"sigma levels three: "<<endl;
-  for(int i=1;i<14;i++){
+  for(int i=1;i<8;i++){
     cout<<results_three[0]->GetBinContent(i)<<" , "<<results_three[1]->GetBinContent(i)<<" , "<<results_three[2]->GetBinContent(i)<<endl;
   }
+  cout<<endl;
+
 
   //Preparing histos
   TString title_models[]={"SMB","A_{1}","A_{2}","B_{1}^{-}","B_{1}^{+}","B_{2}^{-}","B_{2}^{+}","B_{3}^{-}","B_{3}^{+}"};

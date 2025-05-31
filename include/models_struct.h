@@ -22,17 +22,17 @@ struct model_values_struct_t
 {
   float energy = 0;
   // index 0 is empty, 1,2,3,4,5 are for d,u,s,c,b respectively
-  float cross_L[6] = {0};
-  float cross_R[6] = {0};
-  float AFB_L[6] = {0};
-  float AFB_R[6] = {0};
+  float cross_L[7] = {0};
+  float cross_R[7] = {0};
+  float AFB_L[7] = {0};
+  float AFB_R[7] = {0};
 };
 
 struct model_struct_t
 {
   int id = -1;
   TString modelname = "";
-  model_values_struct_t model_values[7]; // up to 6 energies 0,91.2,250,350,380,500,1000
+  model_values_struct_t model_values[7]; // up to 6 energies 0, 91.2,250,350,380,500,1000
 };
 
 std::vector<model_struct_t> theory;
@@ -56,7 +56,7 @@ struct observables_struct_t
 
 float ObsCross(int imodel, int ienergy, int iflav, float pole, float polp)
 {
-
+    
     float tmpcross_L = theory.at(imodel).model_values[ienergy].cross_L[iflav];
     float tmpcross_R = theory.at(imodel).model_values[ienergy].cross_R[iflav];
 
@@ -69,10 +69,9 @@ float ObsCross(int imodel, int ienergy, int iflav, float pole, float polp)
 
 float ObsR(int imodel, int ienergy, int iflav, float pole, float polp)
 {
-
     float tmpcrossHad_L = 0;
     float tmpcrossHad_R = 0;
-    for (int i = 1; i < 6; i++)
+    for (int i = 1; i < 7; i++)
     {
         tmpcrossHad_L += theory.at(imodel).model_values[ienergy].cross_L[i];
         tmpcrossHad_R += theory.at(imodel).model_values[ienergy].cross_R[i];
@@ -89,8 +88,7 @@ float ObsR(int imodel, int ienergy, int iflav, float pole, float polp)
 }
 
 float ObsAFB(int imodel, int ienergy, int iflav, float pole, float polp)
-{
-
+{ 
     float tmpcross_L = theory.at(imodel).model_values[ienergy].cross_L[iflav];
     float tmpcross_R = theory.at(imodel).model_values[ienergy].cross_R[iflav];
     float tmpAFB_L = theory.at(imodel).model_values[ienergy].AFB_L[iflav];
@@ -132,7 +130,6 @@ float ObsAFB(int imodel, int ienergy, int iflav, float pole, float polp)
 
 model_struct_t read_model(TString st_model = "A1", int index = 0, bool debug = true)
 {
-
     TString filename = "../models/Model_" + st_model + ".txt";
     std::ifstream reading_file(filename);
     if (!reading_file)
@@ -146,6 +143,7 @@ model_struct_t read_model(TString st_model = "A1", int index = 0, bool debug = t
     int index_energy = -1;
     while (reading_file)
     {
+
         int flav = 0;
         Float_t tmp_energy = 0, tmp_cross_L = 0, tmp_AFB_L = 0, tmp_cross_R = 0, tmp_AFB_R;
         reading_file >> tmp_energy >> flav >> tmp_cross_L >> tmp_AFB_L >> tmp_cross_R >> tmp_AFB_R;
@@ -167,7 +165,7 @@ model_struct_t read_model(TString st_model = "A1", int index = 0, bool debug = t
 
         cout << newmodel.modelname << " index:" << newmodel.id << endl;
         for (int ie = 0; ie < 6; ie++)
-            for (int ifl = 1; ifl < 6; ifl++)
+            for (int ifl = 1; ifl < 7; ifl++)
                 cout << newmodel.model_values[ie].energy << " " << newmodel.model_values[ie].cross_L[ifl] << " " << newmodel.model_values[ie].cross_R[ifl]
                      << " " << newmodel.model_values[ie].AFB_L[ifl] << " " << newmodel.model_values[ie].AFB_R[ifl] << endl;
     }

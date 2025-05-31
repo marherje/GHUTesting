@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "test_SM_allquarks.C": "cpp",
+        "iostream": "cpp"
+    }
+}
