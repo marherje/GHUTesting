@@ -465,13 +465,52 @@ void test_SM_precision(int mc_first, int mc_last)
     }
   }
   
-  TCanvas *c_SM_comparison= new TCanvas ("SM_comparison","SM_comparison",800,800);
+  TCanvas *c_SM_comparison= new TCanvas ("SM_comparison","SM_comparison",900,800);
   c_SM_comparison->cd();
   gStyle->SetOptStat(0);
   gStyle->SetMarkerSize(2.);
 
+  // Left legend insertion START
+  TBox *box = new TBox(0.03, 0.3, 0.105, 0.88);
+  box->SetFillColor(kWhite);
+  box->SetFillStyle(1001);  
+  box->SetLineColor(kBlack);
+  box->SetLineWidth(2);     
+  box->Draw("l");           
+
+  TBox *box_t = new TBox(0.025, 0.88, 0.11, 0.96);
+  box_t->SetFillColor(kWhite);
+  box_t->SetFillStyle(1001);
+  box_t->SetLineColor(kBlack);
+  box_t->SetLineWidth(2);
+  box_t->Draw("l");
+  
+  TLatex latex;
+  latex.SetTextColor(kBlack);
+  latex.SetTextSize(0.032); 
+  float firstmass = 0.835;
+  float stepmass = 0.0742;
+  float xmass = 0.042;
+  latex.DrawLatex(xmass, firstmass, "19.6");
+  latex.DrawLatex(xmass, firstmass-stepmass, "19.6");
+  latex.DrawLatex(xmass, firstmass-2*stepmass, "14.9");
+  latex.DrawLatex(xmass, firstmass-3*stepmass, "14.9");
+  latex.DrawLatex(xmass, firstmass-4*stepmass, "10.2");
+  latex.DrawLatex(xmass, firstmass-5*stepmass, "10.2");
+  latex.DrawLatex(xmass, firstmass-6*stepmass, " 8.5");
+  latex.DrawLatex(xmass, firstmass-7*stepmass, " 7.2");
+
+  TLatex latex_t;
+  latex_t.SetTextColor(kBlack);
+  latex_t.SetTextSize(0.033);
+  latex_t.DrawLatex(xmass+0.008, 0.932, "m_{Z^{1}}");
+  latex_t.DrawLatex(xmass-0.005, 0.892, "[TeV]");
+    
+  c_SM_comparison->Update();
+  // Left legend insertion END
+
   c_SM_comparison->cd();
-  TPad *padB = new TPad("padB", "padB", 0., 0., 0.85, 0.3);
+  TPad *padB = new TPad("padB", "padB", 0.12, 0., 0.85, 0.3);
   padB->SetTopMargin(0.065);
   padB->SetBottomMargin(0);
   padB->Draw();
@@ -492,7 +531,7 @@ void test_SM_precision(int mc_first, int mc_last)
   QQBARLabel2(0.7435,0.10, " +1000*",kBlack,0.16);
   
   c_SM_comparison->cd();
-  TPad *padL = new TPad("padL", "padL", 0., 0.25, 0.85, 0.95);
+  TPad *padL = new TPad("padL", "padL", 0.12, 0.25, 0.85, 0.95);
   padL->SetTopMargin(0.1);
   padL->SetBottomMargin(0.05);
   padL->SetLeftMargin(0.065);
@@ -508,7 +547,7 @@ void test_SM_precision(int mc_first, int mc_last)
   DrawSepLine(0.507);
   DrawSepLine(0.728);
   DrawTopLine();
-  QQBARLabel3(0.095,0.925,"GHU vs SM discrimination power (#sigma-level)",kBlack,0.06);
+  QQBARLabel3(0.083,0.925,"GHU vs SM discrimination power (#sigma-level)",kBlack,0.06);
 
   c_SM_comparison->cd();
   TPad *padR = new TPad("padR", "padR", 0.82, 0.15, 1., 0.85);
@@ -655,13 +694,52 @@ void test_SM_PID(int mc_first, int mc_last, TString errortype)
     }
   }
   
-  TCanvas *c_SM_comparison= new TCanvas ("SM_comparison","SM_comparison",800,800);
+  TCanvas *c_SM_comparison= new TCanvas ("SM_comparison","SM_comparison",900,800);
   c_SM_comparison->cd();
   gStyle->SetOptStat(0);
   gStyle->SetMarkerSize(2.);
 
+  // Left legend insertion START
+  TBox *box = new TBox(0.03, 0.3, 0.105, 0.88);
+  box->SetFillColor(kWhite);
+  box->SetFillStyle(1001);  
+  box->SetLineColor(kBlack);
+  box->SetLineWidth(2);     
+  box->Draw("l");           
+
+  TBox *box_t = new TBox(0.025, 0.88, 0.11, 0.96);
+  box_t->SetFillColor(kWhite);
+  box_t->SetFillStyle(1001);
+  box_t->SetLineColor(kBlack);
+  box_t->SetLineWidth(2);
+  box_t->Draw("l");
+  
+  TLatex latex;
+  latex.SetTextColor(kBlack);
+  latex.SetTextSize(0.032); 
+  float firstmass = 0.835;
+  float stepmass = 0.0742;
+  float xmass = 0.042;
+  latex.DrawLatex(xmass, firstmass, "19.6");
+  latex.DrawLatex(xmass, firstmass-stepmass, "19.6");
+  latex.DrawLatex(xmass, firstmass-2*stepmass, "14.9");
+  latex.DrawLatex(xmass, firstmass-3*stepmass, "14.9");
+  latex.DrawLatex(xmass, firstmass-4*stepmass, "10.2");
+  latex.DrawLatex(xmass, firstmass-5*stepmass, "10.2");
+  latex.DrawLatex(xmass, firstmass-6*stepmass, " 8.5");
+  latex.DrawLatex(xmass, firstmass-7*stepmass, " 7.2");
+
+  TLatex latex_t;
+  latex_t.SetTextColor(kBlack);
+  latex_t.SetTextSize(0.033);
+  latex_t.DrawLatex(xmass+0.008, 0.932, "m_{Z^{1}}");
+  latex_t.DrawLatex(xmass-0.005, 0.892, "[TeV]");
+    
+  c_SM_comparison->Update();
+  // Left legend insertion END
+
   c_SM_comparison->cd();
-  TPad *padB = new TPad("padB", "padB", 0., 0., 0.85, 0.3);
+  TPad *padB = new TPad("padB", "padB", 0.12, 0., 0.85, 0.3);
   padB->SetTopMargin(0.065);
   padB->SetBottomMargin(0);
   padB->Draw();
@@ -682,7 +760,7 @@ void test_SM_PID(int mc_first, int mc_last, TString errortype)
   QQBARLabel2(0.7435,0.10, " +1000*",kBlack,0.16);
 
   c_SM_comparison->cd();
-  TPad *padL = new TPad("padL", "padL", 0., 0.25, 0.85, 0.95);
+  TPad *padL = new TPad("padL", "padL", 0.12, 0.25, 0.85, 0.95);
   padL->SetTopMargin(0.1);
   padL->SetBottomMargin(0.05);
   padL->SetLeftMargin(0.065);
@@ -698,8 +776,9 @@ void test_SM_PID(int mc_first, int mc_last, TString errortype)
   DrawSepLine(0.507);
   DrawSepLine(0.728);
   DrawTopLine();
-  QQBARLabel3(0.095,0.925,"GHU vs SM discrimination power (#sigma-level)",kBlack,0.06);
-  QQBARLabel3(0.095,0.98,"[Prospects for b & c quark | + t quark with 1% #DeltaA_{FB} | statistical uncertainties only]",kBlue,0.03);
+  QQBARLabel3(0.083,0.925,"GHU vs SM discrimination power (#sigma-level)",kBlack,0.06);
+  QQBARLabel3(0.083,0.98,"[Prospects for b & c quark | statistical uncertainties only]",kBlue,0.03);
+  //QQBARLabel3(0.083,0.98,"[Prospects for b & c quark | + s quark #DeltaA_{FB} preliminary | statistical uncertainties only]",kBlue,0.03);
   c_SM_comparison->cd();
   TPad *padR = new TPad("padR", "padR", 0.82, 0.15, 1., 0.85);
   padR->SetTopMargin(0.1);
@@ -730,7 +809,6 @@ void test_SM_PID(int mc_first, int mc_last, TString errortype)
 }
 
 // void test_polpos
-
 void test_ecfa(TString errortype, TString PID)
 {
  
@@ -846,13 +924,52 @@ void test_ecfa(TString errortype, TString PID)
     }
   }
   
-  TCanvas *c_SM_comparison= new TCanvas ("SM_comparison","SM_comparison",800,800);
+  TCanvas *c_SM_comparison= new TCanvas ("SM_comparison","SM_comparison",900,800);
   c_SM_comparison->cd();
   gStyle->SetOptStat(0);
   gStyle->SetMarkerSize(2.);
 
+  // Left legend insertion START
+  TBox *box = new TBox(0.03, 0.3, 0.105, 0.88);
+  box->SetFillColor(kWhite);
+  box->SetFillStyle(1001);  
+  box->SetLineColor(kBlack);
+  box->SetLineWidth(2);     
+  box->Draw("l");           
+
+  TBox *box_t = new TBox(0.025, 0.88, 0.11, 0.96);
+  box_t->SetFillColor(kWhite);
+  box_t->SetFillStyle(1001);
+  box_t->SetLineColor(kBlack);
+  box_t->SetLineWidth(2);
+  box_t->Draw("l");
+  
+  TLatex latex;
+  latex.SetTextColor(kBlack);
+  latex.SetTextSize(0.032); 
+  float firstmass = 0.835;
+  float stepmass = 0.0742;
+  float xmass = 0.042;
+  latex.DrawLatex(xmass, firstmass, "19.6");
+  latex.DrawLatex(xmass, firstmass-stepmass, "19.6");
+  latex.DrawLatex(xmass, firstmass-2*stepmass, "14.9");
+  latex.DrawLatex(xmass, firstmass-3*stepmass, "14.9");
+  latex.DrawLatex(xmass, firstmass-4*stepmass, "10.2");
+  latex.DrawLatex(xmass, firstmass-5*stepmass, "10.2");
+  latex.DrawLatex(xmass, firstmass-6*stepmass, " 8.5");
+  latex.DrawLatex(xmass, firstmass-7*stepmass, " 7.2");
+
+  TLatex latex_t;
+  latex_t.SetTextColor(kBlack);
+  latex_t.SetTextSize(0.033);
+  latex_t.DrawLatex(xmass+0.008, 0.932, "m_{Z^{1}}");
+  latex_t.DrawLatex(xmass-0.005, 0.892, "[TeV]");
+    
+  c_SM_comparison->Update();
+  // Left legend insertion END
+
   c_SM_comparison->cd();
-  TPad *padB = new TPad("padB", "padB", 0., 0., 0.85, 0.3);
+  TPad *padB = new TPad("padB", "padB", 0.12, 0., 0.85, 0.3);
   padB->SetTopMargin(0.065);
   padB->SetBottomMargin(0);
   padB->Draw();
@@ -873,7 +990,7 @@ void test_ecfa(TString errortype, TString PID)
   QQBARLabel2(0.7435,0.10, " +1000*",kBlack,0.16);
   
   c_SM_comparison->cd();
-  TPad *padL = new TPad("padL", "padL", 0., 0.25, 0.85, 0.95);
+  TPad *padL = new TPad("padL", "padL", 0.12, 0.25, 0.85, 0.95);
   padL->SetTopMargin(0.1);
   padL->SetBottomMargin(0.05);
   padL->SetLeftMargin(0.065);
@@ -889,10 +1006,10 @@ void test_ecfa(TString errortype, TString PID)
   DrawSepLine(0.507);
   DrawSepLine(0.728);
   DrawTopLine();
-  QQBARLabel3(0.095,0.925,"GHU vs SM discrimination power (#sigma-level)",kBlack,0.06);
-  if(PID=="ParT") QQBARLabel3(0.095,0.98,"[Prospects for ParticleTransformer Flavor Tagging]",kBlue,0.03);
-  else if(PID=="noTPC") QQBARLabel3(0.095,0.97,"[Current ILD but w/o PID capabilities]",kBlue,0.03);
-  else if(PID=="dNdx") QQBARLabel3(0.095,0.97,"[Current ILD but exploiting dNdx for PID]",kBlue,0.03); 
+  QQBARLabel3(0.083,0.925,"GHU vs SM discrimination power (#sigma-level)",kBlack,0.06);
+  if(PID=="ParT") QQBARLabel3(0.083,0.98,"[Prospects for ParticleTransformer Flavor Tagging]",kBlue,0.03);
+  else if(PID=="noTPC") QQBARLabel3(0.083,0.97,"[Current ILD but w/o PID capabilities]",kBlue,0.03);
+  else if(PID=="dNdx") QQBARLabel3(0.083,0.97,"[Current ILD but exploiting dNdx for PID]",kBlue,0.03); 
 
   c_SM_comparison->cd();
   TPad *padR = new TPad("padR", "padR", 0.82, 0.15, 1., 0.85);
@@ -922,7 +1039,7 @@ void test_ecfa(TString errortype, TString PID)
   }
 }
 
-void test_SM_allquarks(){
+void test_allquarks(){
   //test_SM_precision(4,5);
   test_SM_PID(3,6,"Stat");
 
