@@ -808,8 +808,9 @@ void test_SM_PID(int mc_first, int mc_last, TString errortype)
   }
 }
 
+
 // void test_polpos
-void test_ecfa(TString errortype, TString PID)
+void test_ecfa(int mc_first, int mc_last, TString errortype, TString PID)
 {
  
   //Read all models:
@@ -819,22 +820,22 @@ void test_ecfa(TString errortype, TString PID)
   TH1F * results_250_unpol[3];
   results_250_unpol[0] = combine_all_mcs(observables, 5, 5, 250, errortype, PID, true);
   results_250_unpol[1] = combine_all_mcs(observables, 4, 4, 250, errortype, PID, true);
-  results_250_unpol[2] = combine_all_mcs(observables, 4, 5, 250, errortype, PID, true);
+  results_250_unpol[2] = combine_all_mcs(observables, mc_first, mc_last, 250, errortype, PID, true);
 
   TH1F * results_250[3];
   results_250[0] = combine_all_mcs(observables, 5, 5, 250, errortype, PID, false);
   results_250[1] = combine_all_mcs(observables, 4, 4, 250, errortype, PID, false);
-  results_250[2] = combine_all_mcs(observables, 4, 5, 250, errortype, PID, false);
+  results_250[2] = combine_all_mcs(observables, mc_first, mc_last, 250, errortype, PID, false);
 
   TH1F * results_both[3];
   results_both[0] = combine_two_energies(observables, 5, 5, 250, 500, errortype, PID);
   results_both[1] = combine_two_energies(observables, 4, 4, 250, 500, errortype, PID);
-  results_both[2] = combine_two_energies(observables, 4, 5, 250, 500, errortype, PID);
+  results_both[2] = combine_two_energies(observables, mc_first, mc_last, 250, 500, errortype, PID);
 
   TH1F * results_three[3];
   results_three[0] = combine_three_energies(observables, 5, 5, 250, 500, 1000, errortype, PID);
   results_three[1] = combine_three_energies(observables, 4, 4, 250, 500, 1000, errortype, PID);
-  results_three[2] = combine_three_energies(observables, 4, 5, 250, 500, 1000, errortype, PID);
+  results_three[2] = combine_three_energies(observables, mc_first, mc_last, 250, 500, 1000, errortype, PID);
   cout<<"sigma levels 250 unpol: "<<endl;
   for(int i=1;i<8;i++){
     cout<<results_250_unpol[0]->GetBinContent(i)<<" , "<<results_250_unpol[1]->GetBinContent(i)<<" , "<<results_250_unpol[2]->GetBinContent(i)<<endl;
@@ -859,7 +860,7 @@ void test_ecfa(TString errortype, TString PID)
 
   //Preparing histos
   TString title_models[]={"SMB","A_{1}","A_{2}","B_{1}^{-}","B_{1}^{+}","B_{2}^{-}","B_{2}^{+}","B_{3}^{-}","B_{3}^{+}"};
-  TString title_precision[]={"B","C","H","B","C","H","B","C","H","B","C","H"};
+  TString title_precision[]={"B","C","Q","B","C","Q","B","C","Q","B","C","Q"};
   
   Int_t colors[6]={kGreen+3,kGreen+3,kGreen+3,kTeal+4,kTeal+5,kTeal+6};
   gStyle->SetPalette((sizeof(colors)/sizeof(Int_t)), colors);
@@ -1007,9 +1008,43 @@ void test_ecfa(TString errortype, TString PID)
   DrawSepLine(0.728);
   DrawTopLine();
   QQBARLabel3(0.083,0.925,"GHU vs SM discrimination power (#sigma-level)",kBlack,0.06);
-  if(PID=="ParT") QQBARLabel3(0.083,0.98,"[Prospects for ParticleTransformer Flavor Tagging]",kBlue,0.03);
-  else if(PID=="noTPC") QQBARLabel3(0.083,0.97,"[Current ILD but w/o PID capabilities]",kBlue,0.03);
-  else if(PID=="dNdx") QQBARLabel3(0.083,0.97,"[Current ILD but exploiting dNdx for PID]",kBlue,0.03); 
+
+  // String for prospects
+  TString quarks_string="";
+  if((mc_first==3) && (mc_last==5)) quarks_string="s, c, b quarks";
+  else if((mc_first==4) && (mc_last==5)) quarks_string="c, b quarks";
+  else if((mc_first==4) && (mc_last==6)) quarks_string="c, b, t quarks";
+  else if((mc_first==3) && (mc_last==6)) quarks_string="s, c, b, t quarks";
+  else if((mc_first==1) && (mc_last==6)) quarks_string="all quarks";
+ 
+  if((PID=="dNdx_Extraquarks_per10") || (PID=="dNdx_Extraquarks_per100") || (PID=="dNdx_Extraquarks_per1000") || (PID=="ParT_Extraquarks_per10") || (PID=="ParT_Extraquarks_per100") || (PID=="ParT_Extraquarks_per1000")) {
+    if((mc_first==3) && (mc_last==5)) quarks_string="+ s quark";
+    if((mc_first==4) && (mc_last==6)) quarks_string="+ t quark";
+    if((mc_first==3) && (mc_last==6)) quarks_string="+ s and t quarks";
+    if((mc_first==1) && (mc_last==6)) quarks_string="+ d, u, s, and t quarks";
+  }
+
+  if(((mc_first==4) && (mc_last==5)) && (errortype=="StatTheoGigaZ") && (PID=="ParT")) QQBARLabel3(0.083,0.98,"[Prospects for ParticleTransformer Flavor Tagging]",kBlue,0.03);
+  else if(((mc_first==4) && (mc_last==5)) && (errortype=="StatTheoGigaZ") && (PID=="noTPC")) QQBARLabel3(0.083,0.97,"[Current ILD but w/o PID capabilities]",kBlue,0.03);
+  else if(((mc_first==4) && (mc_last==5)) && (errortype=="StatTheoGigaZ") && (PID=="dNdx")) QQBARLabel3(0.083,0.97,"[Current ILD but exploiting dNdx for PID]",kBlue,0.03); 
+  
+  if(((mc_first==4) && (mc_last==5)) && (errortype=="Stat") && (PID=="ParT")) QQBARLabel3(0.083,0.98,"[Prospects for ParticleTransformer Flavor Tagging | Stat. only]",kBlue,0.03);
+  else if(((mc_first==4) && (mc_last==5)) && (errortype=="Stat") && (PID=="noTPC")) QQBARLabel3(0.083,0.97,"[Current ILD but w/o PID capabilities | Stat. only]",kBlue,0.03);
+  else if(((mc_first==4) && (mc_last==5)) && (errortype=="Stat") && (PID=="dNdx")) QQBARLabel3(0.083,0.97,"[Current ILD but exploiting dNdx for PID | Stat. only]",kBlue,0.03); 
+  
+  // All quarks prospects
+  else if((errortype=="Stat") && (PID=="Allquarks_per10")) QQBARLabel3(0.083,0.98,"[Prospects for "+quarks_string+" with 10% stat. unc.]",kBlue,0.03);
+  else if((errortype=="Stat") && (PID=="Allquarks_per100")) QQBARLabel3(0.083,0.98,"[Prospects for "+quarks_string+" with 1% stat. unc.]",kBlue,0.03);
+  else if((errortype=="Stat") && (PID=="Allquarks_per1000")) QQBARLabel3(0.083,0.98,"[Prospects for "+quarks_string+" with 0.1% stat. unc.]",kBlue,0.03);
+
+  // Adding single quarks prospects
+  else if((errortype=="Stat") && (PID=="dNdx_Extraquarks_per10")) QQBARLabel3(0.083,0.97,"[Current ILD (dNdx PID) for b & c quarks "+quarks_string+" with 10% stat. unc.]",kBlue,0.03); 
+  else if((errortype=="Stat") && (PID=="dNdx_Extraquarks_per100")) QQBARLabel3(0.083,0.97,"[Current ILD (dNdx PID) for b & c quarks "+quarks_string+" with 1% stat. unc.]",kBlue,0.03); 
+  else if((errortype=="Stat") && (PID=="dNdx_Extraquarks_per1000")) QQBARLabel3(0.083,0.97,"[Current ILD (dNdx PID) for b & c quarks "+quarks_string+" with 0.1% stat. unc.]",kBlue,0.03); 
+
+  else if((errortype=="Stat") && (PID=="dNdx_Extraquarks_per10")) QQBARLabel3(0.083,0.97,"[Current ILD (ParT FT) for b & c quarks "+quarks_string+" with 10% stat. unc.]",kBlue,0.03); 
+  else if((errortype=="Stat") && (PID=="dNdx_Extraquarks_per100")) QQBARLabel3(0.083,0.97,"[Current ILD (ParT FT) for b & c quarks "+quarks_string+" with 1% stat. unc.]",kBlue,0.03); 
+  else if((errortype=="Stat") && (PID=="dNdx_Extraquarks_per1000")) QQBARLabel3(0.083,0.97,"[Current ILD (ParT FT) for b & c quarks "+quarks_string+" with 0.1% stat. unc.]",kBlue,0.03); 
 
   c_SM_comparison->cd();
   TPad *padR = new TPad("padR", "padR", 0.82, 0.15, 1., 0.85);
@@ -1025,9 +1060,15 @@ void test_ecfa(TString errortype, TString PID)
   QQBARLabel2(0.1,0.81, "   ",kBlack,0.16);
   QQBARLabel2(0.1,0.75, "#bullet C: c-quark ",kBlack,0.16);
   QQBARLabel2(0.1,0.71, "  ",kBlack,0.16);
-  QQBARLabel2(0.1,0.65, "#bullet H: b & c ",kBlack,0.16);
   //QQBARLabel(-0.015,0.8775,"",-1,0.65);
-  
+  TString q_label="";
+  if((mc_first==3) && (mc_last==5)) q_label="scb";
+  else if((mc_first==4) && (mc_last==5)) q_label="Both";
+  else if((mc_first==4) && (mc_last==6)) q_label="cbt";
+  else if((mc_first==3) && (mc_last==6)) q_label="scbt";
+  else if((mc_first==1) && (mc_last==6)) q_label="All q";
+  QQBARLabel2(0.1,0.65, "#bullet Q: "+q_label,kBlack,0.16);
+
   c_SM_comparison->cd();
   QQBARLabel(0.845,0.9,"",-1,0.1);
   
@@ -1035,15 +1076,15 @@ void test_ecfa(TString errortype, TString PID)
   // Save everything:    
   TString savingformat[2]={".png",".eps"};
   for(int isave=0; isave<2 ;isave++){
-    c_SM_comparison->SaveAs("SM_comparison_" + errortype + "_" + PID + savingformat[isave]);
+    c_SM_comparison->SaveAs("SM_comparison_" + TString::Format("%d_%d_", mc_first, mc_last) + errortype + "_" + PID + savingformat[isave]);
   }
 }
 
 void test_allquarks(){
   //test_SM_precision(4,5);
-  test_SM_PID(3,6,"Stat");
+  //test_SM_PID(3,6,"Stat","Extraquarks_per1000");
 
-  //test_ecfa("StatTheoGigaZ","ParT");
+  test_ecfa(4,5,"Stat","ParT_Extraquarks_per1000");
 
 
 }

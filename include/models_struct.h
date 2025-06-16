@@ -21,11 +21,11 @@ std::vector<TString> allmodels = {"SMB","A2","A3","Am","Ap","Bm","Bp","Cm","Cp"}
 struct model_values_struct_t
 {
   float energy = 0;
-  // index 0 is empty, 1,2,3,4,5 are for d,u,s,c,b respectively
-  float cross_L[7] = {0};
-  float cross_R[7] = {0};
-  float AFB_L[7] = {0};
-  float AFB_R[7] = {0};
+  // index 0 is empty, 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 are for d,u,s,c,b,t,0,0,0,0,e,0,mu,0,tau respectively
+  float cross_L[16] = {0};
+  float cross_R[16] = {0};
+  float AFB_L[16] = {0};
+  float AFB_R[16] = {0};
 };
 
 struct model_struct_t
@@ -71,7 +71,7 @@ float ObsR(int imodel, int ienergy, int iflav, float pole, float polp)
 {
     float tmpcrossHad_L = 0;
     float tmpcrossHad_R = 0;
-    for (int i = 1; i < 7; i++)
+    for (int i = 1; i < 16; i++)
     {
         tmpcrossHad_L += theory.at(imodel).model_values[ienergy].cross_L[i];
         tmpcrossHad_R += theory.at(imodel).model_values[ienergy].cross_R[i];
@@ -165,7 +165,7 @@ model_struct_t read_model(TString st_model = "A1", int index = 0, bool debug = t
 
         cout << newmodel.modelname << " index:" << newmodel.id << endl;
         for (int ie = 0; ie < 6; ie++)
-            for (int ifl = 1; ifl < 7; ifl++)
+            for (int ifl = 1; ifl < 16; ifl++)
                 cout << newmodel.model_values[ie].energy << " " << newmodel.model_values[ie].cross_L[ifl] << " " << newmodel.model_values[ie].cross_R[ifl]
                      << " " << newmodel.model_values[ie].AFB_L[ifl] << " " << newmodel.model_values[ie].AFB_R[ifl] << endl;
     }

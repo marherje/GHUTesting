@@ -1,11 +1,22 @@
 #!/bin/bash
 
+rm *.txt
+#grep -r "SM:" ../DataChi2_headerA.txt > Model_SMA.txt
+#sed -i "s/SM: //g" Model_SMA.txt
+
+#grep -r "SM:" ../DataChi2_headerB_typocorrection_couplingsA.txt > Model_SMB.txt
+#sed -i "s/SM: //g" Model_SMB.txt
+
+grep -r "SM:" ../NewData.txt > Model_SMA.txt
+sed -i "s/SM: //g" Model_SMA.txt
+
+cp Model_SMA.txt Model_SMB.txt
+
 for model in 1 2 3 4 5 6 7 8
 do
-    grep -r "Model "${model}":" DataIteration_finalmodelselection_310525.txt > Model_${model}.txt
+    grep -r "Model "${model}":" ../NewData.txt > Model_${model}.txt
     sed -i "s/Model "${model}": //g" Model_${model}.txt
 done
-
 
 mv Model_1.txt Model_Am.txt
 mv Model_2.txt Model_Ap.txt

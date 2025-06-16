@@ -190,6 +190,8 @@ std::vector<TH2F*> nsigmas_models(int quark_under_test, float energy_under_test,
           float afb_stat_R = sqrt(cross_SM_R / observables.at(jobs).Cross_R) * experimental_uncertainties.afb_stat[1][index_energy][iquark] / 100.;
           float afb_theo_L = sqrt(cross_SM_L / observables.at(jobs).Cross_L) * experimental_uncertainties.afb_theo_current[0][index_energy][iquark] / 100.;
           float afb_theo_R = sqrt(cross_SM_R / observables.at(jobs).Cross_R) * experimental_uncertainties.afb_theo_current[1][index_energy][iquark] / 100.;
+          
+          // Types of PID or future4 prospects
           if(tpc_status=="noTPC"){
             afb_stat_L = sqrt(cross_SM_L / observables.at(jobs).Cross_L) * experimental_uncertainties.afb_stat_noTPC[0][index_energy][iquark] / 100.;               
             afb_stat_R = sqrt(cross_SM_R / observables.at(jobs).Cross_R) * experimental_uncertainties.afb_stat_noTPC[1][index_energy][iquark] / 100.;
@@ -209,6 +211,84 @@ std::vector<TH2F*> nsigmas_models(int quark_under_test, float energy_under_test,
             afb_stat_R = sqrt(cross_SM_R / observables.at(jobs).Cross_R) * experimental_uncertainties.afb_stat_ParT[1][index_energy][iquark] / 100.;
           }
 
+          // All quarks prospects
+          else if(tpc_status=="Allquarks_per10"){
+            afb_stat_L = 10.;
+            afb_stat_R = 10.;
+          }
+          else if(tpc_status=="Allquarks_per100"){
+            afb_stat_L = 1.;
+            afb_stat_R = 1.;
+          }
+          else if(tpc_status=="Allquarks_per1000"){
+            afb_stat_L = 0.1;
+            afb_stat_R = 0.1;
+          }
+          // dNdx + prospects
+          else if(tpc_status=="dNdx_Extraquarks_per10"){
+            if((iquark == 4) || (iquark == 5)) { 
+              afb_stat_L = sqrt(cross_SM_L / observables.at(jobs).Cross_L) * experimental_uncertainties.afb_stat_dNdx[0][index_energy][iquark] / 100.;
+              afb_stat_R = sqrt(cross_SM_R / observables.at(jobs).Cross_R) * experimental_uncertainties.afb_stat_dNdx[1][index_energy][iquark] / 100.; 
+            }
+            else{
+              afb_stat_L = sqrt(cross_SM_L / observables.at(jobs).Cross_L) * 10. / 100.;
+              afb_stat_R = sqrt(cross_SM_R / observables.at(jobs).Cross_R) * 10. / 100.;   
+            }
+          }
+          else if(tpc_status=="dNdx_Extraquarks_per100"){
+            if((iquark == 4) || (iquark == 5)) { 
+              afb_stat_L = sqrt(cross_SM_L / observables.at(jobs).Cross_L) * experimental_uncertainties.afb_stat_dNdx[0][index_energy][iquark] / 100.;
+              afb_stat_R = sqrt(cross_SM_R / observables.at(jobs).Cross_R) * experimental_uncertainties.afb_stat_dNdx[1][index_energy][iquark] / 100.; 
+            }
+            else{
+              afb_stat_L = sqrt(cross_SM_L / observables.at(jobs).Cross_L) * 1. / 100.;
+              afb_stat_R = sqrt(cross_SM_R / observables.at(jobs).Cross_R) * 1. / 100.;   
+            }
+          }
+          else if(tpc_status=="dNdx_Extraquarks_per1000"){
+            if((iquark == 4) || (iquark == 5)) { 
+              afb_stat_L = sqrt(cross_SM_L / observables.at(jobs).Cross_L) * experimental_uncertainties.afb_stat_dNdx[0][index_energy][iquark] / 100.;
+              afb_stat_R = sqrt(cross_SM_R / observables.at(jobs).Cross_R) * experimental_uncertainties.afb_stat_dNdx[1][index_energy][iquark] / 100.; 
+            }
+            else{
+              afb_stat_L = sqrt(cross_SM_L / observables.at(jobs).Cross_L) * 0.1 / 100.;
+              afb_stat_R = sqrt(cross_SM_R / observables.at(jobs).Cross_R) * 0.1 / 100.;   
+            }
+          }
+
+          // ParT + prospects
+          else if(tpc_status=="ParT_Extraquarks_per10"){
+            if((iquark == 4) || (iquark == 5)) { 
+              afb_stat_L = sqrt(cross_SM_L / observables.at(jobs).Cross_L) * experimental_uncertainties.afb_stat_ParT[0][index_energy][iquark] / 100.;
+              afb_stat_R = sqrt(cross_SM_R / observables.at(jobs).Cross_R) * experimental_uncertainties.afb_stat_ParT[1][index_energy][iquark] / 100.; 
+            }
+            else{
+              afb_stat_L = sqrt(cross_SM_L / observables.at(jobs).Cross_L) * 10. / 100.;
+              afb_stat_R = sqrt(cross_SM_R / observables.at(jobs).Cross_R) * 10. / 100.;   
+            }
+          }
+          else if(tpc_status=="ParT_Extraquarks_per100"){
+            if((iquark == 4) || (iquark == 5)) { 
+              afb_stat_L = sqrt(cross_SM_L / observables.at(jobs).Cross_L) * experimental_uncertainties.afb_stat_ParT[0][index_energy][iquark] / 100.;
+              afb_stat_R = sqrt(cross_SM_R / observables.at(jobs).Cross_R) * experimental_uncertainties.afb_stat_ParT[1][index_energy][iquark] / 100.; 
+            }
+            else{
+              afb_stat_L = sqrt(cross_SM_L / observables.at(jobs).Cross_L) * 1. / 100.;
+              afb_stat_R = sqrt(cross_SM_R / observables.at(jobs).Cross_R) * 1. / 100.;   
+            }
+          }
+          else if(tpc_status=="ParT_Extraquarks_per1000"){
+            if((iquark == 4) || (iquark == 5)) { 
+              afb_stat_L = sqrt(cross_SM_L / observables.at(jobs).Cross_L) * experimental_uncertainties.afb_stat_ParT[0][index_energy][iquark] / 100.;
+              afb_stat_R = sqrt(cross_SM_R / observables.at(jobs).Cross_R) * experimental_uncertainties.afb_stat_ParT[1][index_energy][iquark] / 100.; 
+            }
+            else{
+              afb_stat_L = sqrt(cross_SM_L / observables.at(jobs).Cross_L) * 0.1 / 100.;
+              afb_stat_R = sqrt(cross_SM_R / observables.at(jobs).Cross_R) * 0.1 / 100.;   
+            }
+          }
+          
+          // Error types
           if(errortype=="StatTheoGigaZ"){
             afb_theo_L = sqrt(cross_SM_L / observables.at(jobs).Cross_L) * experimental_uncertainties.afb_theo_gigaZ[0][index_energy][iquark] / 100.;
             afb_theo_R = sqrt(cross_SM_R / observables.at(jobs).Cross_R) * experimental_uncertainties.afb_theo_gigaZ[1][index_energy][iquark] / 100.;
