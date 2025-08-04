@@ -4,6 +4,9 @@ Compare Hosotani model predictions with ILD prospects of AFBb/c at various energ
 
 New Version using d, u, s, c, b, t flavors.
 
+New update: Adding a 1/sqrt(2) factor, which aproximates the separation level of two gaussians in the limit sigma_model=sigma_ref,
+until now we were comparing single values instead of a gaussian for the signals and reference models...
+
 ## Structure
 - `include/`: Header files for the "struc" used for reading the models, the uncertainties for each scenario, and the tools used for the Testing of the models.
 - `models/`: Contains .txt files with the information of the predictions for each model.

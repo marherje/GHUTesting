@@ -1,0 +1,418 @@
+// # Copyright 2023  Adrián Irles (IFIC)
+
+#include "../include/models_struct_newpheno.h"
+#include "TMath.h"
+
+void read_all_models(bool debug = true, string modelselection = "default")
+{
+
+    //uses std::vector<TString> allmodels = {"SMA","SMB","A1","A2","A3","B1","B2","B3","B4"}; defined in models_struct
+    //std::vector<model_struct_t> theory;
+
+    // Change this vector to change models
+    std::vector<TString> allmodels;
+    if(modelselection == "default") allmodels = {"SMB","A2","A3","Am","Ap","Bm","Bp","Cm","Cp"};
+    else if(modelselection == "A") allmodels = {"SMA","A2","A3","A3","A3","A3","A3","A3","A3"};
+    else if(modelselection == "Bm") allmodels = {"SMA","Am","Bm","Cm","Cm","Cm","Cm","Cm","Cm"};
+    else if(modelselection == "Bp") allmodels = {"SMA","Ap","Bp","Cp","Cp","Cp","Cp","Cp","Cp"};
+
+
+    for (int i = 0; i < allmodels.size(); i++)
+    {
+        //cout<<"Reading model: " << allmodels.at(i) << endl;
+        model_struct_t newmodel = read_model(allmodels.at(i), i, debug);
+        //cout<<"Model read: " << newmodel.modelname << endl;
+        theory.push_back(newmodel);
+    }
+
+    if (debug == true)
+    {
+
+        for (int i = 0; i < theory.size(); i++)
+        {
+            cout << theory.at(i).modelname << " index:" << theory.at(i).id << endl;
+            for (int ie = 0; ie < 6; ie++)
+                for (int ifl = 1; ifl < 7; ifl++)
+                    cout << theory.at(i).model_values[ie].energy << " " << theory.at(i).model_values[ie].cross_L[ifl] << " " << theory.at(i).model_values[ie].cross_R[ifl]
+                         << " " << theory.at(i).model_values[ie].AFB_L[ifl] << " " << theory.at(i).model_values[ie].AFB_R[ifl] << endl;
+        }
+    }
+}
+
+std::vector<observables_struct_t> create_observables() {
+
+    cout<< "Creating observables..." << endl;
+    std::vector<observables_struct_t> observables;
+    for (int imodel = 0; imodel < theory.size(); imodel++)
+    {
+      for (int ienergy = 0; ienergy < 6; ienergy++) //Z-Pole,250,350,380,500,1000
+        {
+	  //if (theory.at(imodel).model_values[ienergy].energy != 250)
+	  //    continue;
+	  
+	  for (int iflav = 1; iflav < 7; iflav++)
+            {
+	      if(ienergy==3){ //3 is for CLIC 380
+		observables_struct_t newobs;
+		newobs.id = theory.at(imodel).id;
+		newobs.modelname = theory.at(imodel).modelname;
+		newobs.energy = theory.at(imodel).model_values[ienergy].energy;
+		newobs.flav = iflav;
+		newobs.Cross_L = ObsCross(imodel, ienergy, iflav, -0.8,0);
+		newobs.Cross_R = ObsCross(imodel, ienergy, iflav, 0.8,0);
+		newobs.Cross_unpol = ObsCross(imodel, ienergy, iflav, 0,0);
+		newobs.R_L = ObsR(imodel, ienergy, iflav, -0.8,0);
+		newobs.AFB_L = ObsAFB(imodel, ienergy, iflav, -0.8,0);
+		newobs.R_R = ObsR(imodel, ienergy, iflav, 0.8,0);
+		newobs.AFB_R = ObsAFB(imodel, ienergy, iflav,0.8,0);
+		newobs.R_unpol = ObsR(imodel, ienergy, iflav, 0,0);
+		newobs.AFB_unpol = ObsAFB(imodel, ienergy, iflav, 0,0);
+		observables.push_back(newobs);
+	      }
+	      else if(ienergy==5){
+		      observables_struct_t newobs;
+                newobs.id = theory.at(imodel).id;
+                newobs.modelname = theory.at(imodel).modelname;
+                newobs.energy = theory.at(imodel).model_values[ienergy].energy;
+                newobs.flav = iflav;
+                newobs.Cross_L = ObsCross(imodel, ienergy, iflav, -0.8,0.2);
+                newobs.Cross_R = ObsCross(imodel, ienergy, iflav, 0.8,-0.2);
+                newobs.Cross_unpol = ObsCross(imodel, ienergy, iflav, 0,0);
+                newobs.R_L = ObsR(imodel, ienergy, iflav, -0.8,0.2);
+                newobs.AFB_L = ObsAFB(imodel, ienergy, iflav, -0.8,0.2);
+                newobs.R_R = ObsR(imodel, ienergy, iflav, 0.8,-0.2);
+                newobs.AFB_R = ObsAFB(imodel, ienergy, iflav,0.8,-0.2);
+                newobs.R_unpol = ObsR(imodel, ienergy, iflav, 0,0);
+                newobs.AFB_unpol = ObsAFB(imodel, ienergy, iflav, 0,0);
+                observables.push_back(newobs);
+	      }
+	      else{
+		observables_struct_t newobs;
+		newobs.id = theory.at(imodel).id;
+		newobs.modelname = theory.at(imodel).modelname;
+		newobs.energy = theory.at(imodel).model_values[ienergy].energy;
+		newobs.flav = iflav;
+		newobs.Cross_L = ObsCross(imodel, ienergy, iflav, -0.8,0.3);
+		newobs.Cross_R = ObsCross(imodel, ienergy, iflav, 0.8,-0.3);
+		newobs.Cross_unpol = ObsCross(imodel, ienergy, iflav, 0,0);
+		newobs.R_L = ObsR(imodel, ienergy, iflav, -0.8,0.3);
+		newobs.AFB_L = ObsAFB(imodel, ienergy, iflav, -0.8,0.3);
+		newobs.R_R = ObsR(imodel, ienergy, iflav, 0.8,-0.3);
+		newobs.AFB_R = ObsAFB(imodel, ienergy, iflav,0.8,-0.3);
+		newobs.R_unpol = ObsR(imodel, ienergy, iflav, 0,0);
+		newobs.AFB_unpol = ObsAFB(imodel, ienergy, iflav, 0,0);
+		observables.push_back(newobs);
+	      }
+	    }
+	}
+    }
+    return observables;
+
+}
+
+std::vector<observables_struct_t> create_observables_pol(float epol, float ppol) {
+
+  std::vector<observables_struct_t> observables;
+  for (int imodel = 0; imodel < theory.size(); imodel++)
+  {
+    for (int ienergy = 0; ienergy < 6; ienergy++) // Z-Pole,250,350,380,500,1000
+    {
+      for (int iflav = 1; iflav < 7; iflav++)
+      {
+        observables_struct_t newobs;
+        newobs.id = theory.at(imodel).id;
+        newobs.modelname = theory.at(imodel).modelname;
+        newobs.energy = theory.at(imodel).model_values[ienergy].energy;
+        newobs.flav = iflav;
+        newobs.Cross_L = ObsCross(imodel, ienergy, iflav, -1.*epol, 1.*ppol);
+        newobs.Cross_R = ObsCross(imodel, ienergy, iflav, 1.*epol, -1.*ppol);
+        newobs.Cross_unpol = ObsCross(imodel, ienergy, iflav, 0, 0);
+        newobs.R_L = ObsR(imodel, ienergy, iflav, -1.*epol, 1.*ppol);
+        newobs.AFB_L = ObsAFB(imodel, ienergy, iflav, -1.*epol, 1.*ppol);
+        newobs.R_R = ObsR(imodel, ienergy, iflav, 1.*epol, -1.*ppol);
+        newobs.AFB_R = ObsAFB(imodel, ienergy, iflav, 1.*epol, -1.*ppol);
+        newobs.R_unpol = ObsR(imodel, ienergy, iflav, 0, 0);
+        newobs.AFB_unpol = ObsAFB(imodel, ienergy, iflav, 0, 0);
+        observables.push_back(newobs);
+      }
+    }
+  }
+  return observables;
+}
+
+std::vector<TH2F*> nsigmas_models(int quark_under_test, float energy_under_test, std::vector<observables_struct_t> observables, TString errortype, TString tpc_status) {
+
+  
+    TH2F * h_nsigmas[6];
+
+    for(int i=0; i<6; i++) {
+      h_nsigmas[i]=new TH2F(TString::Format("h_nsigmas_%i_q%i_en%i_",i,quark_under_test,int(energy_under_test))+errortype+"_"+tpc_status,TString::Format("h_nsigmas_%i_q%i_en%i_",i,quark_under_test,int(energy_under_test))+errortype+"_"+tpc_status,31,-0.5,30.5,31,-0.5,30.5);
+      h_nsigmas[i]->SetDirectory(0);
+    }
+
+    float cross_SM_L;
+    float cross_SM_R;
+    float cross_SM_unpol;
+
+    for(int iobs=0; iobs<observables.size(); iobs++) {//loop for reference model
+        //this could be done with iterators, but this is good enough...
+
+        if(observables.at(iobs).flav!=quark_under_test) continue;
+        if(observables.at(iobs).energy!=energy_under_test) continue;
+
+        int id1= observables.at(iobs).id;
+
+        if(id1==0) { //Remember SMB
+            cross_SM_L=observables.at(iobs).Cross_L;
+            cross_SM_R=observables.at(iobs).Cross_R;
+            cross_SM_unpol=observables.at(iobs).Cross_unpol;
+        }
+   
+        for(int jobs=0; jobs<observables.size(); jobs++) {
+
+          int id2=observables.at(jobs).id;
+          //if(id2>id1) continue;
+          float sigmas_AFB_L=0;
+          float sigmas_AFB_R=0;
+          float sigmas_AFB_unpol=0;
+          float sigmas_R_L=0;
+          float sigmas_R_R=0;
+          float sigmas_R_unpol=0;
+          if(observables.at(jobs).flav!=quark_under_test) continue;
+          if(observables.at(jobs).energy!=energy_under_test ) continue;
+
+          int iquark=observables.at(iobs).flav;
+	        int index_energy=0;
+	        if(observables.at(iobs).energy==float(91.2)) index_energy=0;
+	        else if(observables.at(iobs).energy==float(250)) index_energy=1;
+          else if(observables.at(iobs).energy==float(350)) index_energy=2;
+	        else if(observables.at(iobs).energy==float(380)) index_energy=3;
+	        else if(observables.at(iobs).energy==float(500)) index_energy=4;
+          else if(observables.at(iobs).energy==float(1000)) index_energy=5;
+	        // Reading the uncertainties
+          
+          // polarized Beams
+          float r_stat_L = sqrt(cross_SM_L / observables.at(jobs).Cross_L) * experimental_uncertainties.r_stat[0][index_energy][iquark] / 100.;
+          float r_stat_R = sqrt(cross_SM_R / observables.at(jobs).Cross_R) * experimental_uncertainties.r_stat[1][index_energy][iquark] / 100.;
+          float afb_stat_L = sqrt(cross_SM_L / observables.at(jobs).Cross_L) * experimental_uncertainties.afb_stat[0][index_energy][iquark] / 100.;
+          float afb_stat_R = sqrt(cross_SM_R / observables.at(jobs).Cross_R) * experimental_uncertainties.afb_stat[1][index_energy][iquark] / 100.;
+          float afb_theo_L = sqrt(cross_SM_L / observables.at(jobs).Cross_L) * experimental_uncertainties.afb_theo_current[0][index_energy][iquark] / 100.;
+          float afb_theo_R = sqrt(cross_SM_R / observables.at(jobs).Cross_R) * experimental_uncertainties.afb_theo_current[1][index_energy][iquark] / 100.;
+          
+          float r_syst_L = experimental_uncertainties.r_syst[0][index_energy][iquark] / 100.;
+          float r_syst_R = experimental_uncertainties.r_syst[1][index_energy][iquark] / 100.;
+          float afb_syst_L = experimental_uncertainties.afb_syst[0][index_energy][iquark] / 100.;
+          float afb_syst_R = experimental_uncertainties.afb_syst[1][index_energy][iquark] / 100.;
+          float r_stat_unpolarised = experimental_uncertainties.r_stat[2][index_energy][iquark] / 100.;
+          float afb_stat_unpolarised = experimental_uncertainties.afb_stat[2][index_energy][iquark] / 100.;
+          float r_syst_unpolarised = experimental_uncertainties.r_syst[2][index_energy][iquark] / 100.;
+          float afb_syst_unpolarised = experimental_uncertainties.afb_syst[2][index_energy][iquark] / 100.;
+          float afb_theo_unpolarised = experimental_uncertainties.afb_theo_current[2][index_energy][iquark] / 100.;
+
+          // Types of PID or future4 prospects
+          if(tpc_status=="noTPC"){
+            afb_stat_L = sqrt(cross_SM_L / observables.at(jobs).Cross_L) * experimental_uncertainties.afb_stat_noTPC[0][index_energy][iquark] / 100.;               
+            afb_stat_R = sqrt(cross_SM_R / observables.at(jobs).Cross_R) * experimental_uncertainties.afb_stat_noTPC[1][index_energy][iquark] / 100.;
+            afb_stat_unpolarised = experimental_uncertainties.afb_stat_noTPC[2][index_energy][iquark] / 100.;
+
+          }
+          else if(tpc_status=="dEdx"){
+            afb_stat_L = sqrt(cross_SM_L / observables.at(jobs).Cross_L) * experimental_uncertainties.afb_stat_dEdx[0][index_energy][iquark] / 100.;
+            afb_stat_R = sqrt(cross_SM_R / observables.at(jobs).Cross_R) * experimental_uncertainties.afb_stat_dEdx[1][index_energy][iquark] / 100.;
+            afb_stat_unpolarised = experimental_uncertainties.afb_stat_dEdx[2][index_energy][iquark] / 100.;
+          }
+          else if(tpc_status=="dNdx"){
+            afb_stat_L = sqrt(cross_SM_L / observables.at(jobs).Cross_L) * experimental_uncertainties.afb_stat_dNdx[0][index_energy][iquark] / 100.;
+            afb_stat_R = sqrt(cross_SM_R / observables.at(jobs).Cross_R) * experimental_uncertainties.afb_stat_dNdx[1][index_energy][iquark] / 100.; 
+            afb_stat_unpolarised = experimental_uncertainties.afb_stat_dNdx[2][index_energy][iquark] / 100.;
+          
+          }
+          else if(tpc_status=="ParT"){
+            afb_stat_L = sqrt(cross_SM_L / observables.at(jobs).Cross_L) * experimental_uncertainties.afb_stat_ParT[0][index_energy][iquark] / 100.;
+            afb_stat_R = sqrt(cross_SM_R / observables.at(jobs).Cross_R) * experimental_uncertainties.afb_stat_ParT[1][index_energy][iquark] / 100.;
+            afb_stat_unpolarised = experimental_uncertainties.afb_stat_ParT[2][index_energy][iquark] / 100.;
+          }
+
+          // All quarks prospects
+          else if(tpc_status=="Allquarks_per10"){
+            afb_stat_L = 10./100.;
+            afb_stat_R = 10./100.;
+            afb_stat_unpolarised = 10./100.;
+          }
+          else if(tpc_status=="Allquarks_per100"){
+            afb_stat_L = 1./100.;
+            afb_stat_R = 1./100.;
+            afb_stat_unpolarised = 1./100.;
+          }
+          else if(tpc_status=="Allquarks_per1000"){
+            afb_stat_L = 0.1/100.;
+            afb_stat_R = 0.1/100.;
+            afb_stat_unpolarised = 0.1/100.;
+          }
+          // dNdx + prospects
+          else if(tpc_status=="dNdx_Extraquarks_per10"){
+            if((iquark == 4) || (iquark == 5)) { 
+              afb_stat_L = sqrt(cross_SM_L / observables.at(jobs).Cross_L) * experimental_uncertainties.afb_stat_dNdx[0][index_energy][iquark] / 100.;
+              afb_stat_R = sqrt(cross_SM_R / observables.at(jobs).Cross_R) * experimental_uncertainties.afb_stat_dNdx[1][index_energy][iquark] / 100.; 
+              afb_stat_unpolarised = experimental_uncertainties.afb_stat_dNdx[2][index_energy][iquark] / 100.;
+
+            }
+            else{
+              afb_stat_L = sqrt(cross_SM_L / observables.at(jobs).Cross_L) * 10. / 100.;
+              afb_stat_R = sqrt(cross_SM_R / observables.at(jobs).Cross_R) * 10. / 100.;
+              afb_stat_unpolarised = 10. / 100.;   
+            }
+          }
+          else if(tpc_status=="dNdx_Extraquarks_per100"){
+            if((iquark == 4) || (iquark == 5)) { 
+              afb_stat_L = sqrt(cross_SM_L / observables.at(jobs).Cross_L) * experimental_uncertainties.afb_stat_dNdx[0][index_energy][iquark] / 100.;
+              afb_stat_R = sqrt(cross_SM_R / observables.at(jobs).Cross_R) * experimental_uncertainties.afb_stat_dNdx[1][index_energy][iquark] / 100.; 
+              afb_stat_unpolarised = experimental_uncertainties.afb_stat_dNdx[2][index_energy][iquark] / 100.;
+            }
+            else{
+              afb_stat_L = sqrt(cross_SM_L / observables.at(jobs).Cross_L) * 1. / 100.;
+              afb_stat_R = sqrt(cross_SM_R / observables.at(jobs).Cross_R) * 1. / 100.;
+              afb_stat_unpolarised = 1. / 100.;   
+            }
+          }
+          else if(tpc_status=="dNdx_Extraquarks_per1000"){
+            if((iquark == 4) || (iquark == 5)) { 
+              afb_stat_L = sqrt(cross_SM_L / observables.at(jobs).Cross_L) * experimental_uncertainties.afb_stat_dNdx[0][index_energy][iquark] / 100.;
+              afb_stat_R = sqrt(cross_SM_R / observables.at(jobs).Cross_R) * experimental_uncertainties.afb_stat_dNdx[1][index_energy][iquark] / 100.; 
+              afb_stat_unpolarised = experimental_uncertainties.afb_stat_dNdx[2][index_energy][iquark] / 100.;
+            }
+            else{
+              afb_stat_L = sqrt(cross_SM_L / observables.at(jobs).Cross_L) * 0.1 / 100.;
+              afb_stat_R = sqrt(cross_SM_R / observables.at(jobs).Cross_R) * 0.1 / 100.;  
+              afb_stat_unpolarised = 0.1 / 100.; 
+            }
+          }
+
+          // ParT + prospects
+          else if(tpc_status=="ParT_Extraquarks_per10"){
+            if((iquark == 4) || (iquark == 5)) { 
+              afb_stat_L = sqrt(cross_SM_L / observables.at(jobs).Cross_L) * experimental_uncertainties.afb_stat_ParT[0][index_energy][iquark] / 100.;
+              afb_stat_R = sqrt(cross_SM_R / observables.at(jobs).Cross_R) * experimental_uncertainties.afb_stat_ParT[1][index_energy][iquark] / 100.; 
+              afb_stat_unpolarised = experimental_uncertainties.afb_stat_ParT[2][index_energy][iquark] / 100.;
+            }
+            else{
+              afb_stat_L = sqrt(cross_SM_L / observables.at(jobs).Cross_L) * 10. / 100.;
+              afb_stat_R = sqrt(cross_SM_R / observables.at(jobs).Cross_R) * 10. / 100.;   
+              afb_stat_unpolarised = 10. / 100.;
+            }
+          }
+          else if(tpc_status=="ParT_Extraquarks_per100"){
+            if((iquark == 4) || (iquark == 5)) { 
+              afb_stat_L = sqrt(cross_SM_L / observables.at(jobs).Cross_L) * experimental_uncertainties.afb_stat_ParT[0][index_energy][iquark] / 100.;
+              afb_stat_R = sqrt(cross_SM_R / observables.at(jobs).Cross_R) * experimental_uncertainties.afb_stat_ParT[1][index_energy][iquark] / 100.; 
+              afb_stat_unpolarised = experimental_uncertainties.afb_stat_ParT[2][index_energy][iquark] / 100.;
+            }
+            else{
+              afb_stat_L = sqrt(cross_SM_L / observables.at(jobs).Cross_L) * 1. / 100.;
+              afb_stat_R = sqrt(cross_SM_R / observables.at(jobs).Cross_R) * 1. / 100.; 
+              afb_stat_unpolarised = 1. / 100.;  
+            }
+          }
+          else if(tpc_status=="ParT_Extraquarks_per1000"){
+            if((iquark == 4) || (iquark == 5)) { 
+              afb_stat_L = sqrt(cross_SM_L / observables.at(jobs).Cross_L) * experimental_uncertainties.afb_stat_ParT[0][index_energy][iquark] / 100.;
+              afb_stat_R = sqrt(cross_SM_R / observables.at(jobs).Cross_R) * experimental_uncertainties.afb_stat_ParT[1][index_energy][iquark] / 100.; 
+              afb_stat_unpolarised = experimental_uncertainties.afb_stat_ParT[2][index_energy][iquark] / 100.;
+            }
+            else{
+              afb_stat_L = sqrt(cross_SM_L / observables.at(jobs).Cross_L) * 0.1 / 100.;
+              afb_stat_R = sqrt(cross_SM_R / observables.at(jobs).Cross_R) * 0.1 / 100.;  
+              afb_stat_unpolarised = 0.1 / 100.; 
+            }
+          }
+          
+          // Error types
+          if(errortype=="StatTheoGigaZ"){
+            afb_theo_L = sqrt(cross_SM_L / observables.at(jobs).Cross_L) * experimental_uncertainties.afb_theo_gigaZ[0][index_energy][iquark] / 100.;
+            afb_theo_R = sqrt(cross_SM_R / observables.at(jobs).Cross_R) * experimental_uncertainties.afb_theo_gigaZ[1][index_energy][iquark] / 100.;
+            afb_theo_unpolarised = experimental_uncertainties.afb_theo_gigaZ[2][index_energy][iquark] / 100.;
+
+          }
+          else if(errortype=="StatTheo250"){
+            afb_theo_L = sqrt(cross_SM_L / observables.at(jobs).Cross_L) * experimental_uncertainties.afb_theo_250[0][index_energy][iquark] / 100.;
+            afb_theo_R = sqrt(cross_SM_R / observables.at(jobs).Cross_R) * experimental_uncertainties.afb_theo_250[1][index_energy][iquark] / 100.;             
+            afb_theo_unpolarised = experimental_uncertainties.afb_theo_250[2][index_energy][iquark] / 100.;
+          }
+
+          if(errortype=="Stat"){
+              r_syst_L = 0;
+              r_syst_R = 0;
+              afb_syst_L = 0;
+              afb_syst_R = 0;
+              r_syst_unpolarised = 0;
+              afb_syst_unpolarised = 0;
+              afb_theo_L = 0;
+              afb_theo_R = 0;
+              afb_theo_unpolarised = 0;
+          }
+          else if(errortype=="StatSyst"){
+              afb_theo_L = 0;
+              afb_theo_R = 0;
+              afb_theo_unpolarised = 0;
+          }
+          else{
+              r_syst_L = 0;
+              r_syst_R = 0;
+              afb_syst_L = 0;
+              afb_syst_R = 0;
+              r_syst_unpolarised = 0;
+              afb_syst_unpolarised = 0;
+          }
+          //cout<<"debug 0: "<<quark_under_test<<" "<<energy_under_test<<endl;
+          //cout<<"debug i: "<<iquark<<" "<<index_energy<<endl;
+          //cout<<"debug c: "<<cross_SM_L / observables.at(jobs).Cross_L<<" "<<cross_SM_R / observables.at(jobs).Cross_R<<endl;
+          //cout<<"debug 1: "<<afb_stat_L<<" "<<afb_stat_R<<" "<<afb_stat_unpolarised<<endl;
+          //cout<<"debug 2: "<<afb_theo_L<<" "<<afb_theo_R<<" "<<afb_theo_unpolarised<<endl;
+
+	        //Total errors:
+	        float r_total_L=sqrt(r_stat_L*r_stat_L+r_syst_L*r_syst_L);
+          float r_total_R=sqrt(r_stat_R*r_stat_R+r_syst_R*r_syst_R);
+          float afb_total_L=sqrt(afb_stat_L*afb_stat_L+afb_syst_L*afb_syst_L+afb_theo_L*afb_theo_L);
+          float afb_total_R=sqrt(afb_stat_R*afb_stat_R+afb_syst_R*afb_syst_R+afb_theo_R*afb_theo_R);
+          float r_total_unpol=sqrt(r_stat_unpolarised*r_stat_unpolarised+r_syst_unpolarised*r_syst_unpolarised);
+          float afb_total_unpol=sqrt(afb_stat_unpolarised*afb_stat_unpolarised+afb_syst_unpolarised*afb_syst_unpolarised+afb_theo_unpolarised*afb_theo_unpolarised);
+          
+          //cout<<"U: "<<afb_stat_L<<" "<<afb_stat_R<<" "<<afb_stat_unpolarised<<endl;
+          //cout<<"U: "<<afb_theo_L<<" "<<afb_theo_R<<" "<<afb_theo_unpolarised<<endl;
+          //cout<<"U: "<<afb_total_L<<" "<<afb_total_R<<" "<<afb_total_unpol<<endl;
+          
+    	    // nsigmas formula, using uncertainty of the tested model           
+	        //P(P, Q) = (1/2πSPSQ) * exp[-((P-P')^2/2SP^2) - ((Q-Q')^2/2SQ^2)];
+	        sigmas_AFB_L=abs(observables.at(jobs).AFB_L-observables.at(iobs).AFB_L) / abs(observables.at(iobs).AFB_L*afb_total_L);
+	        sigmas_AFB_R=abs(observables.at(jobs).AFB_R-observables.at(iobs).AFB_R) / abs(observables.at(iobs).AFB_R*afb_total_R);
+	        sigmas_AFB_unpol=abs(observables.at(jobs).AFB_unpol-observables.at(iobs).AFB_unpol) / abs(observables.at(iobs).AFB_unpol*afb_total_unpol);
+	        sigmas_R_L=abs(observables.at(jobs).R_L-observables.at(iobs).R_L) / (observables.at(iobs).R_L*r_total_L);
+	        sigmas_R_R=abs(observables.at(jobs).R_R-observables.at(iobs).R_R) / (observables.at(iobs).R_R*r_total_R);
+	        sigmas_R_unpol=abs(observables.at(jobs).R_unpol-observables.at(iobs).R_unpol) / (observables.at(iobs).R_unpol*r_total_unpol);
+          h_nsigmas[0]->SetBinContent(id1+1,id2+1,sigmas_AFB_L);
+          h_nsigmas[1]->SetBinContent(id1+1,id2+1,sigmas_AFB_R);
+  	      h_nsigmas[2]->SetBinContent(id1+1,id2+1,sigmas_AFB_unpol);
+
+          h_nsigmas[3]->SetBinContent(id1+1,id2+1,sigmas_R_L);
+          h_nsigmas[4]->SetBinContent(id1+1,id2+1,sigmas_R_R);
+	        h_nsigmas[5]->SetBinContent(id1+1,id2+1,sigmas_R_unpol);
+
+          //cout<<h_nsigmas[0]->GetBinContent(id1+1,id2+1)<<" "<<h_nsigmas[1]->GetBinContent(id1+1,id2+1)<<" "<<h_nsigmas[2]->GetBinContent(id1+1,id2+1)<<" "<<endl;
+        }
+    }
+
+    for(int iobs=0; iobs<observables.size(); iobs++) {//loop for reference model
+        for(int jobs=0; jobs<observables.size(); jobs++) {
+            for(int i=0; i<6; i++) if(h_nsigmas[i]->GetBinContent(jobs+1,iobs+1) > h_nsigmas[i]->GetBinContent(iobs+1,jobs+1))  h_nsigmas[i]->SetBinContent(iobs+1,jobs+1, h_nsigmas[i]->GetBinContent(jobs+1,iobs+1));
+        }
+    }
+
+    std::vector<TH2F*> result;
+    for(int i=0; i<6; i++) {
+      // I'm including the unpol case, will use it for comparisons!
+      result.push_back(h_nsigmas[i]);
+    }
+
+    return result;
+
+ }

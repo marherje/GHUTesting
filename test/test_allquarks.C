@@ -1,6 +1,6 @@
-// # Copyright 2023  Adrián Irles (IFIC)
+// # Copyright 2025 Jesús P. Márquez Hernández 
 #include "../include/experimentalUnc.h"
-#include "../include/analysis_prob.h"
+#include "../include/analysis_prob_newpheno.h"
 #include "../style/Style.C"
 #include "../style/Labels.C"
 
@@ -193,7 +193,7 @@ void DrawTextBins(std::vector<double> xtodraw,std::vector<double> ytodraw,std::v
   }    
 }
 
-// Helper lambda para combinar todos los MCs de una energía en un solo histograma de nsigma
+// Para combinar todos los MCs de una energía en un solo histograma de nsigma
 auto combine_all_mcs = [](std::vector<observables_struct_t> observables, int mc_first, int mc_last, double energy, TString errortype, TString tpc_status, bool unpol = false) {
   std::vector<std::vector<TH2F*>> probhistos(mc_last+1);
   //mc_first
@@ -229,7 +229,8 @@ auto combine_all_mcs = [](std::vector<observables_struct_t> observables, int mc_
           prob *= Sigma_To_Prob(probhistos[mc][1]->GetBinContent(j+1,1));
         }
       }
-      double nsigma = Prob_To_Sigma(prob);
+      // New 1/sqrt(2) factor to account for the prediction sigma as well, not just the experimental one
+      double nsigma = (1/sqrt(2))*Prob_To_Sigma(prob);
       // Rounding
       if((nsigma>0.95)&&(nsigma<1))nsigma=0.9;
       if((nsigma>1.95)&&(nsigma<2))nsigma=1.9;
@@ -279,7 +280,8 @@ auto combine_two_energies = [](std::vector<observables_struct_t> observables, in
         prob *= Sigma_To_Prob(probhistos_2[mc][0]->GetBinContent(j+1,1));
         prob *= Sigma_To_Prob(probhistos_2[mc][1]->GetBinContent(j+1,1));
       }
-      double nsigma = Prob_To_Sigma(prob);
+      // New 1/sqrt(2) factor to account for the prediction sigma as well, not just the experimental one
+      double nsigma = (1/sqrt(2))*Prob_To_Sigma(prob);
       // Rounding
       if((nsigma>0.95)&&(nsigma<1))nsigma=0.9;
       if((nsigma>1.95)&&(nsigma<2))nsigma=1.9;
@@ -333,7 +335,7 @@ auto combine_three_energies = [](std::vector<observables_struct_t> observables, 
         prob *= Sigma_To_Prob(probhistos_3[mc][0]->GetBinContent(j+1,1));
         prob *= Sigma_To_Prob(probhistos_3[mc][1]->GetBinContent(j+1,1));
       }
-      double nsigma = Prob_To_Sigma(prob);
+      double nsigma = (1/sqrt(2))*Prob_To_Sigma(prob);
       // Rounding
       if((nsigma>0.95)&&(nsigma<1))nsigma=0.9;
       if((nsigma>1.95)&&(nsigma<2))nsigma=1.9;
@@ -343,14 +345,16 @@ auto combine_three_energies = [](std::vector<observables_struct_t> observables, 
       if((nsigma>9.95)&&(nsigma<10))nsigma=9.9;
       result->SetBinContent(j, nsigma);
     }
-    return result;
-  };
+    
+  return result;
+};
+
 
 void test_SM_precision(int mc_first, int mc_last)
 {
  
   //Read all models:
-  read_all_models(false);
+  read_all_models(false,"default");
   std::vector<observables_struct_t> observables=create_observables();
 
   // Para 250 GeV
@@ -547,7 +551,7 @@ void test_SM_precision(int mc_first, int mc_last)
   DrawSepLine(0.507);
   DrawSepLine(0.728);
   DrawTopLine();
-  QQBARLabel3(0.083,0.925,"GHU vs SM discrimination power (#sigma-level)",kBlack,0.06);
+  QQBARLabel3(0.2,0.925,"GHU vs SM (separation power)",kBlack,0.06);
 
   c_SM_comparison->cd();
   TPad *padR = new TPad("padR", "padR", 0.82, 0.15, 1., 0.85);
@@ -776,7 +780,7 @@ void test_SM_PID(int mc_first, int mc_last, TString errortype)
   DrawSepLine(0.507);
   DrawSepLine(0.728);
   DrawTopLine();
-  QQBARLabel3(0.083,0.925,"GHU vs SM discrimination power (#sigma-level)",kBlack,0.06);
+  QQBARLabel3(0.2,0.925,"GHU vs SM (separation power)",kBlack,0.06);
   QQBARLabel3(0.083,0.98,"[Prospects for b & c quark | statistical uncertainties only]",kBlue,0.03);
   //QQBARLabel3(0.083,0.98,"[Prospects for b & c quark | + s quark #DeltaA_{FB} preliminary | statistical uncertainties only]",kBlue,0.03);
   c_SM_comparison->cd();
@@ -1007,7 +1011,8 @@ void test_ecfa(int mc_first, int mc_last, TString errortype, TString PID)
   DrawSepLine(0.507);
   DrawSepLine(0.728);
   DrawTopLine();
-  QQBARLabel3(0.083,0.925,"GHU vs SM discrimination power (#sigma-level)",kBlack,0.06);
+  QQBARLabel3(0.2,0.925,"GHU vs SM (separation power)",kBlack,0.06);
+
 
   // String for prospects
   TString quarks_string="";
@@ -1019,32 +1024,34 @@ void test_ecfa(int mc_first, int mc_last, TString errortype, TString PID)
  
   if((PID=="dNdx_Extraquarks_per10") || (PID=="dNdx_Extraquarks_per100") || (PID=="dNdx_Extraquarks_per1000") || (PID=="ParT_Extraquarks_per10") || (PID=="ParT_Extraquarks_per100") || (PID=="ParT_Extraquarks_per1000")) {
     if((mc_first==3) && (mc_last==5)) quarks_string="+ s quark";
-    if((mc_first==4) && (mc_last==6)) quarks_string="+ t quark";
-    if((mc_first==3) && (mc_last==6)) quarks_string="+ s and t quarks";
-    if((mc_first==1) && (mc_last==6)) quarks_string="+ d, u, s, and t quarks";
+    else if((mc_first==4) && (mc_last==6)) quarks_string="+ t quark";
+    else if((mc_first==3) && (mc_last==6)) quarks_string="+ s and t quarks";
+    else if((mc_first==1) && (mc_last==6)) quarks_string="+ d, u, s, and t quarks";
+    else quarks_string="NOT EXTRA QUARKS LOADED";
   }
 
-  if(((mc_first==4) && (mc_last==5)) && (errortype=="StatTheoGigaZ") && (PID=="ParT")) QQBARLabel3(0.083,0.98,"[Prospects for ParticleTransformer Flavor Tagging]",kBlue,0.03);
-  else if(((mc_first==4) && (mc_last==5)) && (errortype=="StatTheoGigaZ") && (PID=="noTPC")) QQBARLabel3(0.083,0.97,"[Current ILD but w/o PID capabilities]",kBlue,0.03);
-  else if(((mc_first==4) && (mc_last==5)) && (errortype=="StatTheoGigaZ") && (PID=="dNdx")) QQBARLabel3(0.083,0.97,"[Current ILD but exploiting dNdx for PID]",kBlue,0.03); 
+  c_SM_comparison->cd();
+  if(((mc_first==4) && (mc_last==5)) && (errortype=="StatTheoGigaZ") && (PID=="ParT")) QQBARLabel3(0.185,0.945,"[Prospects for ParticleTransformer Flavor Tagging]",kBlue,0.023);
+  else if(((mc_first==4) && (mc_last==5)) && (errortype=="StatTheoGigaZ") && (PID=="noTPC")) QQBARLabel3(0.185,0.945,"[Current ILD but w/o PID capabilities]",kBlue,0.023);
+  else if(((mc_first==4) && (mc_last==5)) && (errortype=="StatTheoGigaZ") && (PID=="dNdx")) QQBARLabel3(0.185,0.945,"[Current ILD but exploiting dNdx for PID]",kBlue,0.023); 
   
-  if(((mc_first==4) && (mc_last==5)) && (errortype=="Stat") && (PID=="ParT")) QQBARLabel3(0.083,0.98,"[Prospects for ParticleTransformer Flavor Tagging | Stat. only]",kBlue,0.03);
-  else if(((mc_first==4) && (mc_last==5)) && (errortype=="Stat") && (PID=="noTPC")) QQBARLabel3(0.083,0.97,"[Current ILD but w/o PID capabilities | Stat. only]",kBlue,0.03);
-  else if(((mc_first==4) && (mc_last==5)) && (errortype=="Stat") && (PID=="dNdx")) QQBARLabel3(0.083,0.97,"[Current ILD but exploiting dNdx for PID | Stat. only]",kBlue,0.03); 
+  if(((mc_first==4) && (mc_last==5)) && (errortype=="Stat") && (PID=="ParT")) QQBARLabel3(0.185,0.945,"[Prospects for ParticleTransformer Flavor Tagging | Stat. only]",kBlue,0.023);
+  else if(((mc_first==4) && (mc_last==5)) && (errortype=="Stat") && (PID=="noTPC")) QQBARLabel3(0.185,0.945,"[Current ILD but w/o PID capabilities | Stat. only]",kBlue,0.023);
+  else if(((mc_first==4) && (mc_last==5)) && (errortype=="Stat") && (PID=="dNdx")) QQBARLabel3(0.185,0.945,"[Current ILD but exploiting dNdx for PID | Stat. only]",kBlue,0.023); 
   
   // All quarks prospects
-  else if((errortype=="Stat") && (PID=="Allquarks_per10")) QQBARLabel3(0.083,0.98,"[Prospects for "+quarks_string+" with 10% stat. unc.]",kBlue,0.03);
-  else if((errortype=="Stat") && (PID=="Allquarks_per100")) QQBARLabel3(0.083,0.98,"[Prospects for "+quarks_string+" with 1% stat. unc.]",kBlue,0.03);
-  else if((errortype=="Stat") && (PID=="Allquarks_per1000")) QQBARLabel3(0.083,0.98,"[Prospects for "+quarks_string+" with 0.1% stat. unc.]",kBlue,0.03);
+  else if((errortype=="Stat") && (PID=="Allquarks_per10")) QQBARLabel3(0.185,0.945,"[Prospects for "+quarks_string+" with 10% stat. unc.]",kBlue,0.023);
+  else if((errortype=="Stat") && (PID=="Allquarks_per100")) QQBARLabel3(0.185,0.945,"[Prospects for "+quarks_string+" with 1% stat. unc.]",kBlue,0.023);
+  else if((errortype=="Stat") && (PID=="Allquarks_per1000")) QQBARLabel3(0.185,0.945,"[Prospects for "+quarks_string+" with 0.1% stat. unc.]",kBlue,0.023);
 
   // Adding single quarks prospects
-  else if((errortype=="Stat") && (PID=="dNdx_Extraquarks_per10")) QQBARLabel3(0.083,0.97,"[Current ILD (dNdx PID) for b & c quarks "+quarks_string+" with 10% stat. unc.]",kBlue,0.03); 
-  else if((errortype=="Stat") && (PID=="dNdx_Extraquarks_per100")) QQBARLabel3(0.083,0.97,"[Current ILD (dNdx PID) for b & c quarks "+quarks_string+" with 1% stat. unc.]",kBlue,0.03); 
-  else if((errortype=="Stat") && (PID=="dNdx_Extraquarks_per1000")) QQBARLabel3(0.083,0.97,"[Current ILD (dNdx PID) for b & c quarks "+quarks_string+" with 0.1% stat. unc.]",kBlue,0.03); 
+  else if((errortype=="Stat") && (PID=="dNdx_Extraquarks_per10")) QQBARLabel3(0.185,0.945,"[Current ILD (dNdx PID) for b & c quarks "+quarks_string+" with 10% stat. unc.]",kBlue,0.023); 
+  else if((errortype=="Stat") && (PID=="dNdx_Extraquarks_per100")) QQBARLabel3(0.185,0.945,"[Current ILD (dNdx PID) for b & c quarks "+quarks_string+" with 1% stat. unc.]",kBlue,0.023); 
+  else if((errortype=="Stat") && (PID=="dNdx_Extraquarks_per1000")) QQBARLabel3(0.185,0.945,"[Current ILD (dNdx PID) for b & c quarks "+quarks_string+" with 0.1% stat. unc.]",kBlue,0.023); 
 
-  else if((errortype=="Stat") && (PID=="dNdx_Extraquarks_per10")) QQBARLabel3(0.083,0.97,"[Current ILD (ParT FT) for b & c quarks "+quarks_string+" with 10% stat. unc.]",kBlue,0.03); 
-  else if((errortype=="Stat") && (PID=="dNdx_Extraquarks_per100")) QQBARLabel3(0.083,0.97,"[Current ILD (ParT FT) for b & c quarks "+quarks_string+" with 1% stat. unc.]",kBlue,0.03); 
-  else if((errortype=="Stat") && (PID=="dNdx_Extraquarks_per1000")) QQBARLabel3(0.083,0.97,"[Current ILD (ParT FT) for b & c quarks "+quarks_string+" with 0.1% stat. unc.]",kBlue,0.03); 
+  else if((errortype=="Stat") && (PID=="ParT_Extraquarks_per10")) QQBARLabel3(0.185,0.945,"[Prospects for ParT FT for b & c quarks "+quarks_string+" with 10% stat. unc.]",kBlue,0.023); 
+  else if((errortype=="Stat") && (PID=="ParT_Extraquarks_per100")) QQBARLabel3(0.185,0.945,"[Prospects for ParT FT for b & c quarks "+quarks_string+" with 1% stat. unc.]",kBlue,0.023); 
+  else if((errortype=="Stat") && (PID=="ParT_Extraquarks_per1000")) QQBARLabel3(0.185,0.945,"[Prospects for ParT FT for b & c quarks "+quarks_string+" with 0.1% stat. unc.]",kBlue,0.023); 
 
   c_SM_comparison->cd();
   TPad *padR = new TPad("padR", "padR", 0.82, 0.15, 1., 0.85);
@@ -1080,11 +1087,11 @@ void test_ecfa(int mc_first, int mc_last, TString errortype, TString PID)
   }
 }
 
-void test_allquarks(){
+void test_allquarks(int mc_first, int mc_last, TString errortype, TString PID){
   //test_SM_precision(4,5);
-  //test_SM_PID(3,6,"Stat","Extraquarks_per1000");
+  //test_SM_PID(mc_first,mc_last,errortype,PID);
 
-  test_ecfa(4,5,"Stat","ParT_Extraquarks_per1000");
+  test_ecfa(mc_first,mc_last,errortype,PID);
 
 
 }
